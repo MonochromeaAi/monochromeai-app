@@ -3,6 +3,7 @@
 <head>
   <title>MonochromeAI Swap</title>
   <script src="https://cdn.jsdelivr.net/npm/ethers/dist/ethers.min.js"></script>
+
   <style>
     body {
       margin:0;
@@ -20,16 +21,11 @@
       padding:25px;
       border-radius:15px;
       width:350px;
-      box-shadow:0 0 20px rgba(0,0,0,0.6);
-    }
-
-    h2 {
-      text-align:center;
     }
 
     input {
       width:100%;
-      padding:12px;
+      padding:10px;
       margin:10px 0;
       border:none;
       border-radius:8px;
@@ -49,12 +45,7 @@
       cursor:pointer;
     }
 
-    button:hover {
-      opacity:0.8;
-    }
-
     .wallet {
-      margin-bottom:15px;
       background:#111827;
     }
   </style>
@@ -63,18 +54,23 @@
 <body>
 
 <div class="card">
-  <h2>MonochromeAI Swap</h2>
 
- <button class="wallet" onclick="connectWallet()" id="connectBtn">
-  Connect Wallet
-</button>
+  <h2 style="text-align:center;">MonochromeAI Swap</h2>
 
-<p id="walletAddress" style="font-size:12px; text-align:center; margin-top:10px;"></p>
+  <!-- WALLET -->
+  <button class="wallet" onclick="connectWallet()" id="connectBtn">
+    Connect Wallet
+  </button>
+
+  <p id="walletAddress" style="font-size:12px; text-align:center;"></p>
+
+  <!-- INPUT -->
   <input type="text" placeholder="From Token (ETH)">
   <input type="text" placeholder="To Token (USDT)">
   <input type="number" placeholder="Amount">
 
   <button onclick="swap()">Swap</button>
+
 </div>
 
 <script>
@@ -100,6 +96,10 @@ async function connectWallet() {
   } else {
     alert("Please install MetaMask");
   }
+}
+
+function swap() {
+  alert("Swap coming soon 🚀");
 }
 </script>
 
