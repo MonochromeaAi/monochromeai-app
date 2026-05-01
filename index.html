@@ -65,10 +65,11 @@
 <div class="card">
   <h2>MonochromeAI Swap</h2>
 
-  <button class="wallet" onclick="connectWallet()">
-    Connect Wallet
-  </button>
+ <button class="wallet" onclick="connectWallet()" id="connectBtn">
+  Connect Wallet
+</button>
 
+<p id="walletAddress" style="font-size:12px; text-align:center; margin-top:10px;"></p>
   <input type="text" placeholder="From Token (ETH)">
   <input type="text" placeholder="To Token (USDT)">
   <input type="number" placeholder="Amount">
@@ -77,23 +78,28 @@
 </div>
 
 <script>
+let provider;
+let signer;
+
 async function connectWallet() {
   if (window.ethereum) {
     try {
-      const accounts = await window.ethereum.request({
-        method: 'eth_requestAccounts'
-      });
-      alert("Connected: " + accounts[0]);
+      provider = new ethers.providers.Web3Provider(window.ethereum);
+      await provider.send("eth_requestAccounts", []);
+      signer = provider.getSigner();
+
+      const address = await signer.getAddress();
+
+      document.getElementById("connectBtn").innerText = "Connected";
+      document.getElementById("walletAddress").innerText =
+        address.substring(0,6) + "..." + address.substring(address.length - 4);
+
     } catch (err) {
       alert("Connection failed");
     }
   } else {
-    alert("Install MetaMask!");
+    alert("Please install MetaMask");
   }
-}
-
-function swap() {
-  alert("Swap feature coming soon 🚀");
 }
 </script>
 
