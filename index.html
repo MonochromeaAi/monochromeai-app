@@ -74,32 +74,24 @@
 </div>
 
 <script>
-let provider;
-let signer;
-
 async function connectWallet() {
-  if (window.ethereum) {
+  if (typeof window.ethereum !== "undefined") {
     try {
-      provider = new ethers.providers.Web3Provider(window.ethereum);
-      await provider.send("eth_requestAccounts", []);
-      signer = provider.getSigner();
-
-      const address = await signer.getAddress();
+      const accounts = await window.ethereum.request({
+        method: "eth_requestAccounts"
+      });
 
       document.getElementById("connectBtn").innerText = "Connected";
       document.getElementById("walletAddress").innerText =
-        address.substring(0,6) + "..." + address.substring(address.length - 4);
+        accounts[0].slice(0,6) + "..." + accounts[0].slice(-4);
 
-    } catch (err) {
-      alert("Connection failed");
+    } catch (error) {
+      console.log(error);
+      alert("User rejected connection");
     }
   } else {
-    alert("Please install MetaMask");
+    alert("MetaMask tidak ditemukan");
   }
-}
-
-function swap() {
-  alert("Swap coming soon 🚀");
 }
 </script>
 
