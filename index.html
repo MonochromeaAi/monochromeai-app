@@ -3,7 +3,7 @@
 <head>
   <title>MonochromeAI Swap</title>
 
-  <!-- Ethers FIX -->
+  <!-- ETHERS FIX -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
 
   <style>
@@ -59,7 +59,7 @@
 
   <h2 style="text-align:center;">MonochromeAI Swap</h2>
 
-  <!-- WALLET -->
+  <!-- CONNECT -->
   <button class="wallet" onclick="connectWallet()" id="connectBtn">
     Connect Wallet
   </button>
@@ -85,6 +85,7 @@
 </div>
 
 <script>
+
 // CONNECT WALLET
 async function connectWallet() {
   if (window.ethereum) {
@@ -113,8 +114,9 @@ const TOKENS = {
   USDC: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
 };
 
-// SWAP
+// SWAP FUNCTION
 async function swap() {
+
   if (!window.ethereum) {
     alert("Connect wallet dulu");
     return;
@@ -130,6 +132,21 @@ async function swap() {
   }
 
   try {
+    const accounts = await window.ethereum.request({
+      method: "eth_accounts"
+    });
+
+    const recipient = accounts[0];
+
+    if (!recipient) {
+      alert("Wallet belum connect");
+      return;
+    }
+
+    console.log("FROM:", TOKENS[from]);
+    console.log("TO:", TOKENS[to]);
+    console.log("USER:", recipient);
+
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
 
@@ -147,7 +164,7 @@ async function swap() {
       tokenIn: TOKENS[from],
       tokenOut: TOKENS[to],
       fee: 3000,
-      recipient: await signer.getAddress(),
+      recipient: recipient,
       deadline: Math.floor(Date.now() / 1000) + 600,
       amountIn: amountIn,
       amountOutMinimum: 0,
@@ -166,9 +183,10 @@ async function swap() {
 
   } catch (err) {
     console.error(err);
-    alert("Swap gagal");
+    alert("Swap gagal: " + err.message);
   }
 }
+
 </script>
 
 </body>
