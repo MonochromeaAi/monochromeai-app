@@ -2,12 +2,14 @@
 <html>
 <head>
   <title>MonochromeAI Swap</title>
+
+  <!-- Ethers FIX -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
 
   <style>
     body {
       margin:0;
-      font-family: Arial, sans-serif;
+      font-family: Arial;
       background:#05070d;
       color:#fff;
       display:flex;
@@ -23,7 +25,7 @@
       width:350px;
     }
 
-    input {
+    input, select {
       width:100%;
       padding:10px;
       margin:10px 0;
@@ -62,20 +64,30 @@
     Connect Wallet
   </button>
 
-  <p id="walletAddress" style="font-size:12px; text-align:center;"></p>
+  <p id="walletAddress" style="font-size:12px;text-align:center;"></p>
 
-  <!-- INPUT -->
- <input type="text" placeholder="From Token (ETH)" id="fromToken">
-<input type="text" placeholder="To Token (USDC)" id="toToken">
-<input type="number" placeholder="Amount" id="amount">
+  <!-- TOKEN -->
+  <select id="fromToken">
+    <option value="ETH">ETH</option>
+    <option value="USDC">USDC</option>
+  </select>
+
+  <select id="toToken">
+    <option value="USDC">USDC</option>
+    <option value="ETH">ETH</option>
+  </select>
+
+  <!-- AMOUNT -->
+  <input type="number" id="amount" placeholder="Amount">
 
   <button onclick="swap()">Swap</button>
 
 </div>
 
 <script>
+// CONNECT WALLET
 async function connectWallet() {
-  if (typeof window.ethereum !== "undefined") {
+  if (window.ethereum) {
     try {
       const accounts = await window.ethereum.request({
         method: "eth_requestAccounts"
@@ -85,16 +97,15 @@ async function connectWallet() {
       document.getElementById("walletAddress").innerText =
         accounts[0].slice(0,6) + "..." + accounts[0].slice(-4);
 
-    } catch (error) {
-      console.log(error);
-      alert("User rejected connection");
+    } catch (err) {
+      alert("User rejected");
     }
   } else {
-    alert("Wallet tidak ditemukan");
+    alert("Install wallet dulu");
   }
 }
 
-// 🔥 TAMBAHKAN DI SINI
+// CONFIG BASE + UNISWAP
 const ROUTER = "0x2626664c2603336E57B271c5C0b26F421741e481";
 
 const TOKENS = {
@@ -102,24 +113,25 @@ const TOKENS = {
   USDC: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
 };
 
+// SWAP
 async function swap() {
   if (!window.ethereum) {
-    alert("Wallet belum connect");
+    alert("Connect wallet dulu");
+    return;
+  }
+
+  const amountInput = document.getElementById("amount").value;
+  const from = document.getElementById("fromToken").value;
+  const to = document.getElementById("toToken").value;
+
+  if (!amountInput || amountInput <= 0) {
+    alert("Masukkan amount");
     return;
   }
 
   try {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
-
-    const amountInput = document.getElementById("amount").value;
-    const from = document.getElementById("fromToken").value.toUpperCase();
-    const to = document.getElementById("toToken").value.toUpperCase();
-
-    if (!TOKENS[from] || !TOKENS[to]) {
-      alert("Token tidak dikenali (pakai ETH / USDC)");
-      return;
-    }
 
     const router = new ethers.Contract(
       ROUTER,
