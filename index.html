@@ -160,21 +160,20 @@ async function swap() {
 
     const amountIn = ethers.utils.parseEther(amountInput);
 
-    const params = {
-      tokenIn: TOKENS[from],
-      tokenOut: TOKENS[to],
-      fee: 3000,
-      recipient: recipient,
-      deadline: Math.floor(Date.now() / 1000) + 600,
-      amountIn: amountIn,
-      amountOutMinimum: 0,
-      sqrtPriceLimitX96: 0
-    };
+    const params = [
+  TOKENS[from],                                  // tokenIn
+  TOKENS[to],                                    // tokenOut
+  3000,                                          // fee
+  recipient,                                     // recipient
+  Math.floor(Date.now() / 1000) + 600,           // deadline
+  amountIn,                                      // amountIn
+  0,                                             // amountOutMinimum
+  0                                              // sqrtPriceLimitX96
+];
 
-    const tx = await router.exactInputSingle(params, {
-      value: amountIn
-    });
-
+const tx = await router.exactInputSingle(params, {
+  value: amountIn
+});
     alert("TX: " + tx.hash);
 
     await tx.wait();
