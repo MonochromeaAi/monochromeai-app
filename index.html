@@ -1,1860 +1,284 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html>
-<!--
-=======================================================
-  CRYPTONEX - Blogger Template [FIXED v1.1]
-  Tema: Cryptocurrency Modern | Dark Mode | Futuristik
-  Format: Blogger XML (Blogspot)
-
-  PERBAIKAN:
-  [FIX 1] Hapus <b:version>2</b:version> yang berdiri sendiri di luar <html>
-           => Dipindahkan menjadi atribut b:version='2' di tag <html>
-           => Root element sebelumnya GANDA (<b:version> + <html>), sekarang tunggal (<html>)
-  [FIX 2] Perbaiki struktur <b:if>/<b:elseif>/<b:else>/<b:endif> pada Blog widget
-           => <b:elseif cond='data:post.url'/> yang salah diperbaiki
-           => Tambahkan </b:if> yang hilang
-  [FIX 3] Pastikan semua CSS tetap di dalam <![CDATA[ ... ]]>
-  [FIX 4] Pastikan semua karakter & di luar CDATA memakai &amp;
-=======================================================
--->
-
-<!-- ╔══════════════════════════════════════════════╗ -->
-<!-- ║  [FIX 1] b:version dipindah ke atribut HTML  ║ -->
-<!-- ║  SEBELUM: <b:version>2</b:version>           ║ -->
-<!-- ║           <html b:css='false' ...>            ║ -->
-<!-- ║  SESUDAH: <html b:version='2' b:css='false'> ║ -->
-<!-- ╚══════════════════════════════════════════════╝ -->
-<html b:version='2' b:css='false' b:defaultwidgetversion='2' b:layoutsVersion='3' b:responsive='true' b:templateUrl='custom' b:templateVersion='1.0.0'>
+<html b:version='2'
+      xmlns='http://www.w3.org/1999/xhtml'
+      xmlns:b='http://www.google.com/2005/gml/b'
+      xmlns:data='http://www.google.com/2005/gml/data'
+      xmlns:expr='http://www.google.com/2005/gml/expr'>
 
 <head>
-  <meta charset='UTF-8'/>
-  <meta content='width=device-width, initial-scale=1.0' name='viewport'/>
-  <b:include data='blog' name='all-head-content'/>
-  <title><data:blog.pageTitle/></title>
+<meta charset='UTF-8'/>
+<meta name='viewport' content='width=device-width, initial-scale=1.0'/>
+<title><data:blog.title/></title>
 
-  <!-- Google Fonts: Orbitron + Rajdhani + Share Tech Mono -->
-  <link href='https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&amp;family=Rajdhani:wght@300;400;500;600;700&amp;family=Share+Tech+Mono&amp;display=swap' rel='stylesheet'/>
-
-  <!-- [FIX 3] CSS tetap terbungkus dalam CDATA — tidak ada perubahan desain -->
-  <b:skin><![CDATA[
-/* =====================================================
-   CRYPTONEX BLOGGER TEMPLATE — CSS
-   Dark Mode | Neon Accents | Glassmorphism
-   ===================================================== */
-
-/* ── CSS Variables ── */
-:root {
-  --bg-void:       #020408;
-  --bg-dark:       #080d14;
-  --bg-card:       rgba(10, 18, 30, 0.75);
-  --bg-glass:      rgba(16, 28, 48, 0.6);
-  --border-glass:  rgba(0, 200, 255, 0.15);
-
-  --neon-blue:     #00c8ff;
-  --neon-purple:   #a855f7;
-  --neon-green:    #00ff88;
-  --neon-pink:     #ff0080;
-
-  --text-primary:  #e8f4ff;
-  --text-secondary:#8ba8c8;
-  --text-muted:    #4a6380;
-
-  --glow-blue:     0 0 20px rgba(0,200,255,0.5), 0 0 60px rgba(0,200,255,0.2);
-  --glow-purple:   0 0 20px rgba(168,85,247,0.5), 0 0 60px rgba(168,85,247,0.2);
-  --glow-green:    0 0 20px rgba(0,255,136,0.5), 0 0 60px rgba(0,255,136,0.2);
-
-  --font-display:  'Orbitron', monospace;
-  --font-body:     'Rajdhani', sans-serif;
-  --font-mono:     'Share Tech Mono', monospace;
-
-  --radius-card:   12px;
-  --radius-sm:     6px;
-  --transition:    all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* ── Reset ── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-
-body {
-  background: var(--bg-void);
-  color: var(--text-primary);
-  font-family: var(--font-body);
-  font-size: 16px;
-  line-height: 1.6;
-  overflow-x: hidden;
-  min-height: 100vh;
-}
-
-/* ── Background Grid Overlay ── */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(0,200,255,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,200,255,0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* ── Scrollbar ── */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--bg-dark); }
-::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 3px; }
-
-/* ── Links ── */
-a { color: var(--neon-blue); text-decoration: none; transition: var(--transition); }
-a:hover { color: var(--neon-purple); }
-
-img { max-width: 100%; height: auto; display: block; }
-
-/* =====================================================
-   NAVBAR
-   ===================================================== */
-#navbar-wrapper {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  background: rgba(2, 4, 8, 0.92);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border-glass);
-  box-shadow: 0 2px 30px rgba(0,200,255,0.08);
-}
-
-.navbar-inner {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 24px;
-  height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-}
-
-.nav-brand {
-  font-family: var(--font-display);
-  font-size: 1.2rem;
-  font-weight: 700;
-  background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  letter-spacing: 2px;
-  white-space: nowrap;
-}
-
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  list-style: none;
-}
-
-.nav-links li a {
-  font-family: var(--font-body);
-  font-size: 0.9rem;
-  font-weight: 500;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-  padding: 8px 16px;
-  border-radius: var(--radius-sm);
-  border: 1px solid transparent;
-  position: relative;
-  transition: var(--transition);
-}
-
-.nav-links li a::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: var(--radius-sm);
-  background: linear-gradient(135deg, rgba(0,200,255,0.1), rgba(168,85,247,0.1));
-  opacity: 0;
-  transition: var(--transition);
-}
-
-.nav-links li a:hover {
-  color: var(--neon-blue);
-  border-color: rgba(0,200,255,0.3);
-  text-shadow: 0 0 10px rgba(0,200,255,0.5);
-}
-.nav-links li a:hover::before { opacity: 1; }
-
-.nav-ticker {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  color: var(--neon-green);
-  white-space: nowrap;
-  overflow: hidden;
-  max-width: 320px;
-}
-
-.nav-ticker span {
-  display: inline-block;
-  animation: ticker 20s linear infinite;
-}
-
-@keyframes ticker {
-  0%   { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
-}
-
-/* Mobile Nav Toggle */
-.nav-toggle {
-  display: none;
-  flex-direction: column;
-  gap: 5px;
-  cursor: pointer;
-  padding: 8px;
-}
-.nav-toggle span {
-  display: block;
-  width: 24px;
-  height: 2px;
-  background: var(--neon-blue);
-  transition: var(--transition);
-}
-
-/* =====================================================
-   HEADER / HERO
-   ===================================================== */
-#header-wrapper {
-  position: relative;
-  min-height: 420px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  background:
-    radial-gradient(ellipse 80% 60% at 20% 50%, rgba(0,200,255,0.08) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 80% at 80% 30%, rgba(168,85,247,0.08) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 50% at 50% 100%, rgba(0,255,136,0.04) 0%, transparent 50%),
-    var(--bg-dark);
-}
-
-/* Hero animated orbs */
-#header-wrapper::before,
-#header-wrapper::after {
-  content: '';
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(80px);
-  animation: orbFloat 8s ease-in-out infinite alternate;
-  pointer-events: none;
-}
-#header-wrapper::before {
-  width: 400px; height: 400px;
-  background: radial-gradient(circle, rgba(0,200,255,0.12), transparent);
-  top: -100px; left: -100px;
-}
-#header-wrapper::after {
-  width: 500px; height: 300px;
-  background: radial-gradient(circle, rgba(168,85,247,0.10), transparent);
-  bottom: -80px; right: -80px;
-  animation-delay: -4s;
-}
-
-@keyframes orbFloat {
-  from { transform: translate(0, 0) scale(1); }
-  to   { transform: translate(40px, 20px) scale(1.1); }
-}
-
-.hero-content {
-  position: relative;
-  z-index: 2;
-  text-align: center;
-  padding: 60px 24px 100px;
-  max-width: 800px;
-}
-
-.hero-eyebrow {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  letter-spacing: 4px;
-  color: var(--neon-green);
-  text-transform: uppercase;
-  margin-bottom: 16px;
-  animation: fadeInDown 0.6s ease both;
-}
-
-.hero-title {
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 5vw, 3.5rem);
-  font-weight: 900;
-  line-height: 1.1;
-  letter-spacing: 2px;
-  background: linear-gradient(135deg, #fff 0%, var(--neon-blue) 40%, var(--neon-purple) 80%, #fff 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: 16px;
-  animation: fadeInDown 0.6s 0.1s ease both;
-}
-
-.hero-subtitle {
-  font-family: var(--font-body);
-  font-size: 1.1rem;
-  color: var(--text-secondary);
-  margin-bottom: 32px;
-  animation: fadeInDown 0.6s 0.2s ease both;
-}
-
-.hero-stats {
-  display: flex;
-  justify-content: center;
-  gap: 40px;
-  flex-wrap: wrap;
-  animation: fadeInUp 0.6s 0.3s ease both;
-}
-
-.hero-stat {
-  text-align: center;
-}
-.hero-stat .value {
-  font-family: var(--font-display);
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: var(--neon-blue);
-  text-shadow: var(--glow-blue);
-}
-.hero-stat .label {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-
-@keyframes fadeInDown {
-  from { opacity: 0; transform: translateY(-20px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-/* =====================================================
-   LOGO (CENTER TOP FLOATING)
-   ===================================================== */
-#logo-wrapper {
-  position: absolute;
-  top: 64px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 999;
-  pointer-events: none;
-}
-
-.logo-floating {
-  pointer-events: all;
-  width: 80px;
-  height: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(10, 20, 40, 0.7);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(0,200,255,0.4);
-  border-radius: 50%;
-  box-shadow:
-    0 0 20px rgba(0,200,255,0.4),
-    0 0 60px rgba(0,200,255,0.15),
-    inset 0 0 20px rgba(0,200,255,0.05);
-  animation: logoPulse 3s ease-in-out infinite, logoFloat 4s ease-in-out infinite alternate;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  cursor: pointer;
-}
-
-.logo-floating:hover {
-  transform: scale(1.1);
-  box-shadow:
-    0 0 30px rgba(0,200,255,0.7),
-    0 0 80px rgba(0,200,255,0.3),
-    inset 0 0 30px rgba(0,200,255,0.1);
-}
-
-.logo-svg {
-  width: 44px;
-  height: 44px;
-}
-
-@keyframes logoPulse {
-  0%, 100% { border-color: rgba(0,200,255,0.4); box-shadow: 0 0 20px rgba(0,200,255,0.4), 0 0 60px rgba(0,200,255,0.15); }
-  50%       { border-color: rgba(168,85,247,0.6); box-shadow: 0 0 30px rgba(168,85,247,0.5), 0 0 80px rgba(168,85,247,0.2); }
-}
-
-@keyframes logoFloat {
-  from { transform: translateY(0px); }
-  to   { transform: translateY(-8px); }
-}
-
-/* =====================================================
-   MAIN LAYOUT WRAPPER
-   ===================================================== */
-#main-wrapper {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 48px 24px;
-  display: grid;
-  grid-template-columns: 1fr 320px;
-  gap: 32px;
-  position: relative;
-  z-index: 1;
-}
-
-/* =====================================================
-   SECTION HEADINGS
-   ===================================================== */
-.section-heading {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 32px;
-}
-
-.section-heading h2 {
-  font-family: var(--font-display);
-  font-size: 1.1rem;
-  font-weight: 700;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--text-primary);
-}
-
-.section-heading::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, rgba(0,200,255,0.4), transparent);
-}
-
-.section-tag {
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  letter-spacing: 2px;
-  padding: 3px 10px;
-  border-radius: 20px;
-  text-transform: uppercase;
-}
-.tag-blue   { background: rgba(0,200,255,0.1); color: var(--neon-blue); border: 1px solid rgba(0,200,255,0.3); }
-.tag-purple { background: rgba(168,85,247,0.1); color: var(--neon-purple); border: 1px solid rgba(168,85,247,0.3); }
-.tag-green  { background: rgba(0,255,136,0.1); color: var(--neon-green); border: 1px solid rgba(0,255,136,0.3); }
-
-/* =====================================================
-   POST CARDS — MAINBAR
-   ===================================================== */
-#blog-posts-wrapper {
-  /* Managed by Blogger */
-}
-
-.trending-strip {
-  background: var(--bg-glass);
-  border: 1px solid var(--border-glass);
-  border-radius: var(--radius-card);
-  padding: 16px 24px;
-  margin-bottom: 40px;
-  backdrop-filter: blur(12px);
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  overflow: hidden;
-}
-
-.trending-label {
-  font-family: var(--font-display);
-  font-size: 0.65rem;
-  letter-spacing: 2px;
-  color: var(--neon-green);
-  white-space: nowrap;
-  padding: 4px 12px;
-  border: 1px solid rgba(0,255,136,0.3);
-  border-radius: 20px;
-  background: rgba(0,255,136,0.08);
-}
-
-.trending-scroll {
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-  white-space: nowrap;
-  overflow: hidden;
-  flex: 1;
-}
-.trending-scroll span {
-  display: inline-block;
-  animation: ticker 30s linear infinite;
-}
-.trending-scroll .up   { color: var(--neon-green); }
-.trending-scroll .down { color: var(--neon-pink); }
-
-.posts-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  margin-bottom: 48px;
-}
-
-.post-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-glass);
-  border-radius: var(--radius-card);
-  overflow: hidden;
-  backdrop-filter: blur(12px);
-  transition: var(--transition);
-  animation: fadeIn 0.5s ease both;
-  cursor: pointer;
-}
-
-.post-card:hover {
-  transform: translateY(-6px);
-  border-color: rgba(0,200,255,0.4);
-  box-shadow: var(--glow-blue), 0 20px 40px rgba(0,0,0,0.4);
-}
-
-.post-card:nth-child(2):hover {
-  border-color: rgba(168,85,247,0.4);
-  box-shadow: var(--glow-purple), 0 20px 40px rgba(0,0,0,0.4);
-}
-
-.post-card:nth-child(3):hover {
-  border-color: rgba(0,255,136,0.4);
-  box-shadow: var(--glow-green), 0 20px 40px rgba(0,0,0,0.4);
-}
-
-.post-thumb {
-  position: relative;
-  height: 180px;
-  overflow: hidden;
-  background: linear-gradient(135deg, rgba(0,200,255,0.1), rgba(168,85,247,0.1));
-}
-
-.post-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s ease;
-}
-.post-card:hover .post-thumb img { transform: scale(1.05); }
-
-.post-thumb-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(2,4,8,0.8) 0%, transparent 50%);
-}
-
-.post-category {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  letter-spacing: 2px;
-  padding: 3px 10px;
-  border-radius: 20px;
-  text-transform: uppercase;
-}
-
-.post-body {
-  padding: 20px;
-}
-
-.post-meta {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 10px;
-}
-
-.post-date {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  color: var(--text-muted);
-  letter-spacing: 1px;
-}
-
-.post-read-time {
-  font-size: 0.7rem;
-  color: var(--text-muted);
-}
-
-.post-title {
-  font-family: var(--font-body);
-  font-size: 1rem;
-  font-weight: 600;
-  line-height: 1.4;
-  color: var(--text-primary);
-  margin-bottom: 10px;
-  transition: var(--transition);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-.post-card:hover .post-title { color: var(--neon-blue); }
-
-.post-excerpt {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  line-height: 1.6;
-  margin-bottom: 16px;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.post-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.btn-read-more {
-  font-family: var(--font-body);
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--neon-blue);
-  padding: 7px 18px;
-  border: 1px solid rgba(0,200,255,0.4);
-  border-radius: var(--radius-sm);
-  background: rgba(0,200,255,0.05);
-  cursor: pointer;
-  transition: var(--transition);
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-.btn-read-more:hover {
-  background: rgba(0,200,255,0.15);
-  border-color: var(--neon-blue);
-  box-shadow: var(--glow-blue);
-  color: #fff;
-}
-.btn-read-more::after { content: '→'; }
-
-.blog-posts .post-outer {
-  margin-bottom: 32px;
-}
-
-/* =====================================================
-   LATEST ARTICLES SECTION
-   ===================================================== */
-.latest-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-bottom: 48px;
-}
-
-.latest-item {
-  display: flex;
-  gap: 16px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-glass);
-  border-radius: var(--radius-card);
-  padding: 16px;
-  backdrop-filter: blur(12px);
-  transition: var(--transition);
-  animation: fadeIn 0.5s ease both;
-}
-
-.latest-item:hover {
-  border-color: rgba(168,85,247,0.4);
-  transform: translateX(4px);
-  box-shadow: -4px 0 20px rgba(168,85,247,0.2);
-}
-
-.latest-thumb {
-  width: 90px;
-  height: 70px;
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  flex-shrink: 0;
-  background: linear-gradient(135deg, rgba(168,85,247,0.2), rgba(0,200,255,0.2));
-}
-.latest-thumb img { width: 100%; height: 100%; object-fit: cover; }
-
-.latest-content { flex: 1; min-width: 0; }
-
-.latest-title {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 6px;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  transition: var(--transition);
-}
-.latest-item:hover .latest-title { color: var(--neon-purple); }
-
-.latest-meta {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  color: var(--text-muted);
-  letter-spacing: 1px;
-}
-
-/* =====================================================
-   SIDEBAR
-   ===================================================== */
-.widget-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-glass);
-  border-radius: var(--radius-card);
-  padding: 20px;
-  margin-bottom: 24px;
-  backdrop-filter: blur(12px);
-  position: relative;
-  overflow: hidden;
-}
-
-.widget-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
-}
-
-.widget-title {
-  font-family: var(--font-display);
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-  margin-bottom: 16px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid rgba(0,200,255,0.1);
-}
-
-.widget ul {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.widget ul li a {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 12px;
-  border-radius: var(--radius-sm);
-  font-family: var(--font-body);
-  font-size: 0.88rem;
-  font-weight: 500;
-  color: var(--text-secondary);
-  border: 1px solid transparent;
-  transition: var(--transition);
-}
-
-.widget ul li a::before {
-  content: '▸';
-  color: var(--neon-blue);
-  font-size: 0.7rem;
-  transition: var(--transition);
-}
-
-.widget ul li a:hover {
-  color: var(--neon-blue);
-  background: rgba(0,200,255,0.05);
-  border-color: rgba(0,200,255,0.2);
-  padding-left: 16px;
-}
-
-.crypto-prices {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.crypto-price-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 12px;
-  background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(255,255,255,0.05);
-  border-radius: var(--radius-sm);
-  transition: var(--transition);
-}
-.crypto-price-item:hover { border-color: rgba(0,200,255,0.2); background: rgba(0,200,255,0.03); }
-
-.crypto-info { display: flex; align-items: center; gap: 10px; }
-
-.crypto-icon {
-  width: 32px; height: 32px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--font-display);
-  font-size: 0.6rem;
-  font-weight: 700;
-}
-.btc  { background: rgba(247,147,26,0.15); color: #f7931a; border: 1px solid rgba(247,147,26,0.3); }
-.eth  { background: rgba(98,126,234,0.15); color: #627eea; border: 1px solid rgba(98,126,234,0.3); }
-.bnb  { background: rgba(243,186,47,0.15); color: #f3ba2f; border: 1px solid rgba(243,186,47,0.3); }
-.sol  { background: rgba(153,69,255,0.15); color: #9945ff; border: 1px solid rgba(153,69,255,0.3); }
-
-.crypto-name { font-family: var(--font-body); font-size: 0.85rem; font-weight: 600; color: var(--text-primary); }
-.crypto-symbol { font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-muted); }
-
-.crypto-right { text-align: right; }
-.crypto-price { font-family: var(--font-mono); font-size: 0.85rem; font-weight: 700; color: var(--text-primary); }
-.crypto-change { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; }
-.change-up   { color: var(--neon-green); }
-.change-down { color: var(--neon-pink); }
-
-.sentiment-bar { margin-bottom: 16px; }
-.sentiment-labels {
-  display: flex; justify-content: space-between;
-  font-family: var(--font-mono); font-size: 0.7rem; margin-bottom: 6px;
-}
-.fear-label   { color: var(--neon-pink); }
-.greed-label  { color: var(--neon-green); }
-.sentiment-track {
-  height: 8px;
-  background: rgba(255,255,255,0.05);
-  border-radius: 4px;
-  overflow: hidden;
-  position: relative;
-}
-.sentiment-fill {
-  height: 100%;
-  width: 62%;
-  background: linear-gradient(90deg, var(--neon-pink), #ffaa00, var(--neon-green));
-  border-radius: 4px;
-}
-.sentiment-indicator {
-  position: absolute;
-  top: 50%; left: 62%;
-  transform: translate(-50%, -50%);
-  width: 14px; height: 14px;
-  background: #fff;
-  border-radius: 50%;
-  box-shadow: 0 0 8px rgba(255,255,255,0.5);
-}
-.sentiment-value {
-  text-align: center;
-  font-family: var(--font-display);
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--neon-green);
-  text-shadow: var(--glow-green);
-  margin: 12px 0 4px;
-}
-.sentiment-status {
-  text-align: center;
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-
-.widget .label-list { display: flex; flex-wrap: wrap; gap: 8px; }
-.widget .label-list li { list-style: none; }
-.widget .label-list li a {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  letter-spacing: 1px;
-  padding: 4px 12px;
-  border-radius: 20px;
-  background: rgba(0,200,255,0.07);
-  border: 1px solid rgba(0,200,255,0.2);
-  color: var(--text-secondary);
-  transition: var(--transition);
-}
-.widget .label-list li a:hover {
-  background: rgba(0,200,255,0.15);
-  color: var(--neon-blue);
-  border-color: var(--neon-blue);
-}
-
-.widget .popular-posts ol {
-  list-style: none;
-  counter-reset: pop;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+<b:skin><![CDATA[
+/* ================= GLOBAL ================= */
+body{
+  margin:0;
+  background:#05070d;
+  color:#e5e7eb;
+  font-family:Arial, sans-serif;
 }
-.widget .popular-posts ol li {
-  counter-increment: pop;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px;
-  background: rgba(255,255,255,0.02);
-  border-radius: var(--radius-sm);
-  border: 1px solid transparent;
-  transition: var(--transition);
-}
-.widget .popular-posts ol li:hover { border-color: rgba(0,200,255,0.2); }
-.widget .popular-posts ol li::before {
-  content: counter(pop, decimal-leading-zero);
-  font-family: var(--font-display);
-  font-size: 0.7rem;
-  color: var(--neon-blue);
-  min-width: 24px;
-}
-.widget .popular-posts ol li a {
-  font-size: 0.82rem;
-  color: var(--text-secondary);
-  line-height: 1.4;
-}
-.widget .popular-posts ol li a:hover { color: var(--neon-blue); }
 
-/* =====================================================
-   BLOGGER DEFAULT POST OVERRIDES
-   ===================================================== */
-.post {
-  background: var(--bg-card);
-  border: 1px solid var(--border-glass);
-  border-radius: var(--radius-card);
-  padding: 32px;
-  margin-bottom: 32px;
-  backdrop-filter: blur(12px);
-  animation: fadeIn 0.5s ease both;
-}
-
-.post-header .post-title {
-  font-family: var(--font-display);
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 12px;
-  line-height: 1.3;
-}
-.post-header .post-title a { color: var(--text-primary); }
-.post-header .post-title a:hover { color: var(--neon-blue); }
+a{ text-decoration:none; }
 
-.post-meta-info {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-  margin-bottom: 20px;
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  color: var(--text-muted);
-  letter-spacing: 1px;
+/* ================= NAVBAR ================= */
+#navbar-wrapper{
+  position:sticky;
+  top:0;
+  background:#020408;
+  z-index:999;
+  border-bottom:1px solid rgba(255,255,255,0.05);
 }
 
-.post-body { color: var(--text-secondary); line-height: 1.8; font-size: 0.95rem; }
-.post-body h2, .post-body h3 { font-family: var(--font-display); color: var(--text-primary); margin: 24px 0 12px; }
-.post-body blockquote {
-  border-left: 3px solid var(--neon-blue);
-  padding-left: 16px;
-  color: var(--text-secondary);
-  font-style: italic;
-  margin: 20px 0;
+.navbar-inner{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:14px 20px;
 }
-.post-body code {
-  font-family: var(--font-mono);
-  background: rgba(0,200,255,0.08);
-  border: 1px solid rgba(0,200,255,0.2);
-  padding: 2px 6px;
-  border-radius: 3px;
-  font-size: 0.85em;
-  color: var(--neon-blue);
-}
 
-.post-footer { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border-glass); }
-
-.jump-link a {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--font-body);
-  font-size: 0.82rem;
-  font-weight: 600;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--neon-blue);
-  padding: 9px 22px;
-  border: 1px solid rgba(0,200,255,0.4);
-  border-radius: var(--radius-sm);
-  background: rgba(0,200,255,0.05);
-  transition: var(--transition);
+.nav-brand{
+  font-weight:bold;
+  letter-spacing:2px;
 }
-.jump-link a:hover { background: rgba(0,200,255,0.15); box-shadow: var(--glow-blue); color: #fff; }
-.jump-link a::after { content: '→'; }
 
-.blog-pager {
-  display: flex;
-  justify-content: space-between;
-  padding: 24px 0;
-  gap: 16px;
-}
-.blog-pager a {
-  font-family: var(--font-body);
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: 1px;
-  padding: 10px 24px;
-  border: 1px solid rgba(0,200,255,0.3);
-  border-radius: var(--radius-sm);
-  background: var(--bg-card);
-  color: var(--neon-blue);
-  backdrop-filter: blur(12px);
-  transition: var(--transition);
+.nav-links{
+  display:flex;
+  gap:18px;
+  list-style:none;
 }
-.blog-pager a:hover { background: rgba(0,200,255,0.12); border-color: var(--neon-blue); box-shadow: var(--glow-blue); }
 
-.comments {
-  background: var(--bg-card);
-  border: 1px solid var(--border-glass);
-  border-radius: var(--radius-card);
-  padding: 24px;
-  margin-top: 32px;
-  backdrop-filter: blur(12px);
+.nav-links li a{
+  color:#ccc;
+  font-size:14px;
 }
 
-/* =====================================================
-   FOOTER
-   ===================================================== */
-#footer-wrapper {
-  background: rgba(4, 8, 16, 0.95);
-  border-top: 1px solid var(--border-glass);
-  position: relative;
-  z-index: 1;
+.nav-links li a:hover{
+  color:#00c8ff;
 }
 
-#footer-wrapper::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--neon-blue), var(--neon-purple), var(--neon-blue), transparent);
+.nav-toggle{
+  display:none;
+  cursor:pointer;
 }
 
-.footer-grid {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 60px 24px 40px;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 40px;
+/* ================= HERO ================= */
+.hero-content{
+  padding:80px 20px;
+  text-align:center;
 }
 
-.footer-section-title {
-  font-family: var(--font-display);
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--neon-blue);
-  margin-bottom: 20px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid rgba(0,200,255,0.15);
+.hero-title{
+  font-size:2rem;
+  font-weight:700;
 }
 
-.footer-about-text {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  line-height: 1.7;
-  margin-bottom: 16px;
+/* ================= MAIN ================= */
+#main-wrapper{
+  max-width:1200px;
+  margin:auto;
+  padding:30px 20px;
+  display:grid;
+  grid-template-columns:2fr 1fr;
+  gap:30px;
 }
 
-.footer-brand {
-  font-family: var(--font-display);
-  font-size: 1.1rem;
-  font-weight: 700;
-  background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  letter-spacing: 3px;
-  margin-bottom: 12px;
+/* ================= POST ================= */
+.post{
+  background:#0b0f19;
+  padding:20px;
+  border-radius:12px;
+  margin-bottom:20px;
 }
 
-.footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-.footer-links li a {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: var(--transition);
+.post-title a{
+  color:#fff;
 }
-.footer-links li a::before { content: '›'; color: var(--neon-blue); }
-.footer-links li a:hover { color: var(--text-primary); padding-left: 6px; }
 
-.footer-contact-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 14px;
-  font-size: 0.85rem;
-  color: var(--text-muted);
+.post-title a:hover{
+  color:#00c8ff;
 }
 
-.footer-contact-icon {
-  width: 32px; height: 32px;
-  background: rgba(0,200,255,0.08);
-  border: 1px solid rgba(0,200,255,0.2);
-  border-radius: var(--radius-sm);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.8rem;
-  flex-shrink: 0;
+/* ================= SIDEBAR ================= */
+.widget-card{
+  background:#0b0f19;
+  padding:18px;
+  border-radius:12px;
+  margin-bottom:20px;
 }
 
-.social-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-
-.social-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 12px 8px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-glass);
-  border-radius: var(--radius-card);
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
-  letter-spacing: 1px;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  transition: var(--transition);
-  cursor: pointer;
-  backdrop-filter: blur(8px);
+/* ================= FOOTER ================= */
+#footer-wrapper{
+  background:#020408;
+  margin-top:40px;
 }
-.social-btn .sicon { font-size: 1.1rem; line-height: 1; }
-.social-btn:hover {
-  background: rgba(0,200,255,0.08);
-  border-color: rgba(0,200,255,0.4);
-  color: var(--neon-blue);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(0,200,255,0.15);
-}
 
-.footer-bottom {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 20px 24px;
-  border-top: 1px solid rgba(255,255,255,0.05);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 12px;
+.footer-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:20px;
+  padding:40px;
 }
-
-.footer-copyright { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); letter-spacing: 1px; }
-.footer-copyright span { color: var(--neon-blue); }
-.footer-legal { display: flex; gap: 20px; }
-.footer-legal a { font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-muted); letter-spacing: 1px; transition: var(--transition); }
-.footer-legal a:hover { color: var(--neon-blue); }
 
-/* =====================================================
-   RESPONSIVE
-   ===================================================== */
-@media (max-width: 1024px) {
-  #main-wrapper { grid-template-columns: 1fr 280px; gap: 24px; }
-  .posts-grid { grid-template-columns: repeat(2, 1fr); }
-  .footer-grid { grid-template-columns: repeat(2, 1fr); gap: 32px; }
+.footer-bottom{
+  text-align:center;
+  padding:20px;
+  border-top:1px solid rgba(255,255,255,0.05);
 }
 
-@media (max-width: 768px) {
-  #main-wrapper { grid-template-columns: 1fr; padding: 24px 16px; }
-  .posts-grid { grid-template-columns: 1fr; }
-  #sidebar-wrapper { order: 2; }
-  .navbar-inner { padding: 0 16px; }
-  .nav-links {
-    display: none;
-    position: absolute;
-    top: 64px; left: 0; right: 0;
-    flex-direction: column;
-    background: rgba(2,4,8,0.97);
-    border-bottom: 1px solid var(--border-glass);
-    padding: 16px;
-    gap: 4px;
-    backdrop-filter: blur(20px);
+/* ================= RESPONSIVE ================= */
+@media(max-width:768px){
+  #main-wrapper{
+    grid-template-columns:1fr;
   }
-  .nav-links.open { display: flex; }
-  .nav-ticker { display: none; }
-  .nav-toggle { display: flex; }
-  .footer-grid { grid-template-columns: 1fr 1fr; gap: 24px; }
-  .hero-stats { gap: 24px; }
-  .logo-floating { width: 64px; height: 64px; }
-  .logo-svg { width: 36px; height: 36px; }
+
+  .nav-links{
+    display:none;
+    flex-direction:column;
+    position:absolute;
+    top:60px;
+    left:0;
+    right:0;
+    background:#020408;
+  }
+
+  .nav-links.open{ display:flex; }
+
+  .nav-toggle{
+    display:block;
+  }
+
+  .footer-grid{
+    grid-template-columns:1fr;
+  }
 }
+]]></b:skin>
 
-@media (max-width: 480px) {
-  .footer-grid { grid-template-columns: 1fr; }
-  .footer-bottom { flex-direction: column; text-align: center; }
-  .hero-content { padding: 50px 16px 90px; }
-}
-
-/* =====================================================
-   UTILITY ANIMATIONS
-   ===================================================== */
-@keyframes shimmer {
-  0%   { background-position: -200% center; }
-  100% { background-position: 200% center; }
-}
-
-.shimmer-text {
-  background: linear-gradient(90deg, var(--text-muted) 0%, var(--neon-blue) 40%, var(--neon-purple) 60%, var(--text-muted) 100%);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: shimmer 4s linear infinite;
-}
-
-/* =====================================================
-   BLOGGER STANDARD ELEMENTS
-   ===================================================== */
-.widget-content { margin-top: 8px; }
-.clear { clear: both; }
-.no-items { color: var(--text-muted); font-size: 0.85rem; padding: 12px 0; }
-#blog-pager { padding: 16px 0; }
-.loadmore-section { text-align: center; padding: 20px 0; }
-
-  ]]></b:skin>
 </head>
 
 <body>
 
-<!-- =====================================================
-     NAVBAR SECTION
-     ===================================================== -->
+<!-- NAVBAR -->
 <div id='navbar-wrapper'>
   <div class='navbar-inner'>
-    <div class='nav-brand'>&#9670; CRYPTONEX</div>
 
-    <div class='nav-ticker'>
-      <span>
-        BTC $67,420 &#9650;2.3% &nbsp;|&nbsp;
-        ETH $3,280 &#9650;1.8% &nbsp;|&nbsp;
-        BNB $578 &#9660;0.5% &nbsp;|&nbsp;
-        SOL $182 &#9650;4.2% &nbsp;|&nbsp;
-        ADA $0.58 &#9650;1.1% &nbsp;|&nbsp;
-        XRP $0.62 &#9660;0.3% &nbsp;|&nbsp;
-        DOT $9.40 &#9650;0.9% &nbsp;|&nbsp;
-        DOGE $0.18 &#9650;5.6%
-      </span>
+    <div class='nav-brand'>◆ CRYPTONEX</div>
+
+    <ul class='nav-links' id='nav-links'>
+      <li><a href='/'>Home</a></li>
+      <li><a href='/p/market.html'>Market</a></li>
+      <li><a href='/p/portfolio.html'>Portfolio</a></li>
+      <li><a href='/p/news.html'>News</a></li>
+    </ul>
+
+    <div class='nav-toggle'
+         onclick='document.getElementById(&quot;nav-links&quot;).classList.toggle(&quot;open&quot;)'>
+      ☰
     </div>
 
-    <nav>
-      <ul class='nav-links' id='nav-links'>
-        <li><a href='/'>Home</a></li>
-        <li><a href='/p/market.html'>Market</a></li>
-        <li><a href='/p/portfolio.html'>Portfolio</a></li>
-        <li><a href='/p/news.html'>News</a></li>
-      </ul>
-    </nav>
-
-    <!-- [FIX 4] onclick: & diganti &amp; agar valid XML -->
-    <div class='nav-toggle' id='nav-toggle' onclick='document.getElementById(&quot;nav-links&quot;).classList.toggle(&quot;open&quot;)'>
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
   </div>
-
-  <b:section class='navbar' id='navbar' maxwidgets='1' name='Navbar' preferred='yes' showaddelement='no'>
-    <b:widget id='HTML1' locked='false' title='Navbar HTML' type='HTML' version='2'>
-      <b:widget-settings>
-        <b:widget-setting name='content'>&lt;!-- Navbar widget placeholder --&gt;</b:widget-setting>
-      </b:widget-settings>
-      <b:includable id='main'>
-        <b:if cond='data:title != &quot;&quot;'><h2 class='title'><data:title/></h2></b:if>
-        <div class='widget-content'><data:content/></div>
-      </b:includable>
-    </b:widget>
-  </b:section>
 </div>
 
-<!-- =====================================================
-     LOGO SECTION (Floating Center Top)
-     ===================================================== -->
-<b:section class='logo-section' id='logo-section' maxwidgets='1' name='Logo Center' preferred='yes' showaddelement='yes'>
-  <b:widget id='HTML2' locked='false' title='Logo Floating' type='HTML' version='2'>
-    <b:widget-settings>
-      <b:widget-setting name='content'>&lt;div id=&quot;logo-wrapper&quot;&gt;
-  &lt;div class=&quot;logo-floating&quot; title=&quot;CryptoNex&quot;&gt;
-    &lt;svg class=&quot;logo-svg&quot; viewBox=&quot;0 0 100 100&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;
-      &lt;polygon points=&quot;50,8 92,32 92,68 50,92 8,68 8,32&quot; fill=&quot;none&quot; stroke=&quot;#00c8ff&quot; stroke-width=&quot;2.5&quot; opacity=&quot;0.8&quot;/&gt;
-      &lt;polygon points=&quot;50,20 80,38 80,62 50,80 20,62 20,38&quot; fill=&quot;rgba(0,200,255,0.05)&quot; stroke=&quot;#a855f7&quot; stroke-width=&quot;1.5&quot; opacity=&quot;0.7&quot;/&gt;
-      &lt;text x=&quot;50&quot; y=&quot;57&quot; text-anchor=&quot;middle&quot; font-family=&quot;Orbitron, monospace&quot; font-size=&quot;22&quot; font-weight=&quot;900&quot; fill=&quot;url(#lg1)&quot;&gt;&#8383;&lt;/text&gt;
-      &lt;defs&gt;
-        &lt;linearGradient id=&quot;lg1&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;1&quot; y2=&quot;1&quot;&gt;
-          &lt;stop offset=&quot;0%&quot; stop-color=&quot;#00c8ff&quot;/&gt;
-          &lt;stop offset=&quot;100%&quot; stop-color=&quot;#a855f7&quot;/&gt;
-        &lt;/linearGradient&gt;
-      &lt;/defs&gt;
-    &lt;/svg&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</b:widget-setting>
-    </b:widget-settings>
-    <b:includable id='main'>
-      <b:if cond='data:title != &quot;&quot;'><h2 class='title'><data:title/></h2></b:if>
-      <div class='widget-content'><data:content/></div>
-    </b:includable>
-  </b:widget>
-</b:section>
+<!-- HERO -->
+<div class='hero-content'>
+  <h1 class='hero-title'>Crypto Intelligence Hub</h1>
+  <p>Real-time market insights &amp; analytics</p>
+</div>
 
-<!-- =====================================================
-     HEADER / HERO SECTION
-     ===================================================== -->
-<b:section class='header' id='header' maxwidgets='1' name='Header Hero' preferred='yes' showaddelement='yes'>
-  <b:widget id='HTML3' locked='false' title='Hero Banner' type='HTML' version='2'>
-    <b:widget-settings>
-      <b:widget-setting name='content'>&lt;div id=&quot;header-wrapper&quot;&gt;
-  &lt;div class=&quot;hero-content&quot;&gt;
-    &lt;p class=&quot;hero-eyebrow&quot;&gt;&#9672; REAL-TIME CRYPTO INSIGHTS &#9672;&lt;/p&gt;
-    &lt;h1 class=&quot;hero-title&quot;&gt;The Future of&lt;br/&gt;Digital Finance&lt;/h1&gt;
-    &lt;p class=&quot;hero-subtitle&quot;&gt;Stay ahead of the market with cutting-edge analysis, news, and portfolio tracking.&lt;/p&gt;
-    &lt;div class=&quot;hero-stats&quot;&gt;
-      &lt;div class=&quot;hero-stat&quot;&gt;
-        &lt;div class=&quot;value&quot;&gt;$2.4T&lt;/div&gt;
-        &lt;div class=&quot;label&quot;&gt;Market Cap&lt;/div&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;hero-stat&quot;&gt;
-        &lt;div class=&quot;value&quot;&gt;12,480+&lt;/div&gt;
-        &lt;div class=&quot;label&quot;&gt;Coins Tracked&lt;/div&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;hero-stat&quot;&gt;
-        &lt;div class=&quot;value&quot;&gt;$98B&lt;/div&gt;
-        &lt;div class=&quot;label&quot;&gt;24h Volume&lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</b:widget-setting>
-    </b:widget-settings>
-    <b:includable id='main'>
-      <b:if cond='data:title != &quot;&quot;'><h2 class='title'><data:title/></h2></b:if>
-      <div class='widget-content'><data:content/></div>
-    </b:includable>
-  </b:widget>
-</b:section>
-
-<!-- =====================================================
-     MAIN CONTENT AREA
-     ===================================================== -->
+<!-- MAIN -->
 <div id='main-wrapper'>
 
-  <!-- ── MAINBAR ── -->
-  <div id='blog-posts-wrapper'>
+  <!-- BLOG -->
+  <div>
 
-    <div class='trending-strip'>
-      <span class='trending-label'>&#128293; TRENDING</span>
-      <div class='trending-scroll'>
-        <span>
-          BTC breaks $67K resistance &nbsp;&#183;&nbsp;
-          Ethereum ETF sees $400M inflows &nbsp;&#183;&nbsp;
-          Solana DeFi TVL hits $12B &nbsp;&#183;&nbsp;
-          Fed signals rate cuts, crypto rallies &nbsp;&#183;&nbsp;
-          BlackRock BTC holdings reach 300K BTC &nbsp;&#183;&nbsp;
-          Binance launches new Layer-2 network &nbsp;&#183;&nbsp;
-          XRP legal battle nears final ruling
-        </span>
-      </div>
-    </div>
+    <b:section id='main' showaddelement='yes'>
 
-    <b:section class='main' id='main' name='Mainbar Artikel' preferred='yes' showaddelement='yes'>
+      <b:widget id='Blog1' type='Blog' locked='true'>
 
-      <!-- Featured Posts Grid -->
-      <b:widget id='HTML4' locked='false' title='Featured Crypto Posts' type='HTML' version='2'>
-        <b:widget-settings>
-          <b:widget-setting name='content'>&lt;div class=&quot;section-heading&quot;&gt;
-  &lt;span class=&quot;section-tag tag-blue&quot;&gt;FEATURED&lt;/span&gt;
-  &lt;h2&gt;Trending Crypto News&lt;/h2&gt;
-&lt;/div&gt;
-&lt;div class=&quot;posts-grid&quot;&gt;
-  &lt;div class=&quot;post-card&quot;&gt;
-    &lt;div class=&quot;post-thumb&quot;&gt;
-      &lt;img src=&quot;https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&amp;h=220&amp;fit=crop&quot; alt=&quot;Bitcoin&quot;/&gt;
-      &lt;div class=&quot;post-thumb-overlay&quot;&gt;&lt;/div&gt;
-      &lt;span class=&quot;post-category tag-blue&quot;&gt;BITCOIN&lt;/span&gt;
-    &lt;/div&gt;
-    &lt;div class=&quot;post-body&quot;&gt;
-      &lt;div class=&quot;post-meta&quot;&gt;&lt;span class=&quot;post-date&quot;&gt;MAY 02, 2026&lt;/span&gt;&lt;span class=&quot;post-read-time&quot;&gt;&#183; 4 MIN READ&lt;/span&gt;&lt;/div&gt;
-      &lt;h3 class=&quot;post-title&quot;&gt;Bitcoin Smashes $67K &amp;mdash; Is a Six-Figure Target Finally in Sight?&lt;/h3&gt;
-      &lt;p class=&quot;post-excerpt&quot;&gt;On-chain data suggests institutional accumulation is accelerating as BTC breaks through a key multi-month resistance zone, eyeing $80K next.&lt;/p&gt;
-      &lt;div class=&quot;post-footer&quot;&gt;&lt;a class=&quot;btn-read-more&quot; href=&quot;#&quot;&gt;Read More&lt;/a&gt;&lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class=&quot;post-card&quot;&gt;
-    &lt;div class=&quot;post-thumb&quot;&gt;
-      &lt;img src=&quot;https://images.unsplash.com/photo-1622630998477-20aa696ecb05?w=400&amp;h=220&amp;fit=crop&quot; alt=&quot;Ethereum&quot;/&gt;
-      &lt;div class=&quot;post-thumb-overlay&quot;&gt;&lt;/div&gt;
-      &lt;span class=&quot;post-category tag-purple&quot;&gt;ETHEREUM&lt;/span&gt;
-    &lt;/div&gt;
-    &lt;div class=&quot;post-body&quot;&gt;
-      &lt;div class=&quot;post-meta&quot;&gt;&lt;span class=&quot;post-date&quot;&gt;MAY 01, 2026&lt;/span&gt;&lt;span class=&quot;post-read-time&quot;&gt;&#183; 5 MIN READ&lt;/span&gt;&lt;/div&gt;
-      &lt;h3 class=&quot;post-title&quot;&gt;Ethereum ETF Inflows Shatter Records &amp;mdash; Institutional Demand Surges&lt;/h3&gt;
-      &lt;p class=&quot;post-excerpt&quot;&gt;Spot Ethereum ETFs attracted $400M in a single trading day, signaling massive institutional confidence in the world&amp;#39;s second-largest cryptocurrency.&lt;/p&gt;
-      &lt;div class=&quot;post-footer&quot;&gt;&lt;a class=&quot;btn-read-more&quot; href=&quot;#&quot;&gt;Read More&lt;/a&gt;&lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class=&quot;post-card&quot;&gt;
-    &lt;div class=&quot;post-thumb&quot;&gt;
-      &lt;img src=&quot;https://images.unsplash.com/photo-1559526324-593bc073d938?w=400&amp;h=220&amp;fit=crop&quot; alt=&quot;DeFi&quot;/&gt;
-      &lt;div class=&quot;post-thumb-overlay&quot;&gt;&lt;/div&gt;
-      &lt;span class=&quot;post-category tag-green&quot;&gt;DeFi&lt;/span&gt;
-    &lt;/div&gt;
-    &lt;div class=&quot;post-body&quot;&gt;
-      &lt;div class=&quot;post-meta&quot;&gt;&lt;span class=&quot;post-date&quot;&gt;APR 30, 2026&lt;/span&gt;&lt;span class=&quot;post-read-time&quot;&gt;&#183; 6 MIN READ&lt;/span&gt;&lt;/div&gt;
-      &lt;h3 class=&quot;post-title&quot;&gt;Solana DeFi Hits $12B TVL &amp;mdash; Ecosystem Growth Defies Expectations&lt;/h3&gt;
-      &lt;p class=&quot;post-excerpt&quot;&gt;Solana&amp;#39;s DeFi ecosystem has reached a new all-time high in total value locked, driven by new lending protocols and high-throughput DEX activity.&lt;/p&gt;
-      &lt;div class=&quot;post-footer&quot;&gt;&lt;a class=&quot;btn-read-more&quot; href=&quot;#&quot;&gt;Read More&lt;/a&gt;&lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class=&quot;post-card&quot;&gt;
-    &lt;div class=&quot;post-thumb&quot;&gt;
-      &lt;img src=&quot;https://images.unsplash.com/photo-1642790106117-e829e14a795f?w=400&amp;h=220&amp;fit=crop&quot; alt=&quot;NFT&quot;/&gt;
-      &lt;div class=&quot;post-thumb-overlay&quot;&gt;&lt;/div&gt;
-      &lt;span class=&quot;post-category tag-purple&quot;&gt;NFT&lt;/span&gt;
-    &lt;/div&gt;
-    &lt;div class=&quot;post-body&quot;&gt;
-      &lt;div class=&quot;post-meta&quot;&gt;&lt;span class=&quot;post-date&quot;&gt;APR 29, 2026&lt;/span&gt;&lt;span class=&quot;post-read-time&quot;&gt;&#183; 3 MIN READ&lt;/span&gt;&lt;/div&gt;
-      &lt;h3 class=&quot;post-title&quot;&gt;NFT Market Revival: Blue-Chip Collections See 300% Volume Surge&lt;/h3&gt;
-      &lt;p class=&quot;post-excerpt&quot;&gt;After a prolonged bear market, premium NFT collections are staging a dramatic comeback as collector sentiment turns bullish with new marketplace launches.&lt;/p&gt;
-      &lt;div class=&quot;post-footer&quot;&gt;&lt;a class=&quot;btn-read-more&quot; href=&quot;#&quot;&gt;Read More&lt;/a&gt;&lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class=&quot;post-card&quot;&gt;
-    &lt;div class=&quot;post-thumb&quot;&gt;
-      &lt;img src=&quot;https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=400&amp;h=220&amp;fit=crop&quot; alt=&quot;Regulation&quot;/&gt;
-      &lt;div class=&quot;post-thumb-overlay&quot;&gt;&lt;/div&gt;
-      &lt;span class=&quot;post-category tag-blue&quot;&gt;REGULATION&lt;/span&gt;
-    &lt;/div&gt;
-    &lt;div class=&quot;post-body&quot;&gt;
-      &lt;div class=&quot;post-meta&quot;&gt;&lt;span class=&quot;post-date&quot;&gt;APR 28, 2026&lt;/span&gt;&lt;span class=&quot;post-read-time&quot;&gt;&#183; 7 MIN READ&lt;/span&gt;&lt;/div&gt;
-      &lt;h3 class=&quot;post-title&quot;&gt;Global Crypto Regulation Enters New Era: What Traders Must Know&lt;/h3&gt;
-      &lt;p class=&quot;post-excerpt&quot;&gt;Governments worldwide are fast-tracking crypto legislation. We break down the key rules affecting your portfolio, exchange access, and tax obligations.&lt;/p&gt;
-      &lt;div class=&quot;post-footer&quot;&gt;&lt;a class=&quot;btn-read-more&quot; href=&quot;#&quot;&gt;Read More&lt;/a&gt;&lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class=&quot;post-card&quot;&gt;
-    &lt;div class=&quot;post-thumb&quot;&gt;
-      &lt;img src=&quot;https://images.unsplash.com/photo-1518186285589-2f7649de83e0?w=400&amp;h=220&amp;fit=crop&quot; alt=&quot;AI Crypto&quot;/&gt;
-      &lt;div class=&quot;post-thumb-overlay&quot;&gt;&lt;/div&gt;
-      &lt;span class=&quot;post-category tag-green&quot;&gt;AI + CRYPTO&lt;/span&gt;
-    &lt;/div&gt;
-    &lt;div class=&quot;post-body&quot;&gt;
-      &lt;div class=&quot;post-meta&quot;&gt;&lt;span class=&quot;post-date&quot;&gt;APR 27, 2026&lt;/span&gt;&lt;span class=&quot;post-read-time&quot;&gt;&#183; 5 MIN READ&lt;/span&gt;&lt;/div&gt;
-      &lt;h3 class=&quot;post-title&quot;&gt;AI-Powered Trading Bots Now Control 40% of Crypto Volume&lt;/h3&gt;
-      &lt;p class=&quot;post-excerpt&quot;&gt;Machine learning models and autonomous trading agents are reshaping crypto markets. Here&amp;#39;s how to leverage AI tools in your own trading strategy.&lt;/p&gt;
-      &lt;div class=&quot;post-footer&quot;&gt;&lt;a class=&quot;btn-read-more&quot; href=&quot;#&quot;&gt;Read More&lt;/a&gt;&lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</b:widget-setting>
-        </b:widget-settings>
-        <b:includable id='main'>
-          <b:if cond='data:title != &quot;&quot;'><h2 class='title'><data:title/></h2></b:if>
-          <div class='widget-content'><data:content/></div>
-        </b:includable>
-      </b:widget>
-
-      <!-- Latest Articles -->
-      <b:widget id='HTML5' locked='false' title='Latest Articles' type='HTML' version='2'>
-        <b:widget-settings>
-          <b:widget-setting name='content'>&lt;div class=&quot;section-heading&quot;&gt;
-  &lt;span class=&quot;section-tag tag-purple&quot;&gt;LATEST&lt;/span&gt;
-  &lt;h2&gt;Latest Articles&lt;/h2&gt;
-&lt;/div&gt;
-&lt;div class=&quot;latest-list&quot;&gt;
-  &lt;div class=&quot;latest-item&quot;&gt;
-    &lt;div class=&quot;latest-thumb&quot;&gt;&lt;img src=&quot;https://images.unsplash.com/photo-1631897642056-97a7abebacf0?w=150&amp;h=100&amp;fit=crop&quot; alt=&quot;Post&quot;/&gt;&lt;/div&gt;
-    &lt;div class=&quot;latest-content&quot;&gt;
-      &lt;h4 class=&quot;latest-title&quot;&gt;How to Build a Diversified Crypto Portfolio in 2026&lt;/h4&gt;
-      &lt;div class=&quot;latest-meta&quot;&gt;APR 26, 2026 &#183; 8 MIN READ&lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class=&quot;latest-item&quot;&gt;
-    &lt;div class=&quot;latest-thumb&quot;&gt;&lt;img src=&quot;https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=150&amp;h=100&amp;fit=crop&quot; alt=&quot;Post&quot;/&gt;&lt;/div&gt;
-    &lt;div class=&quot;latest-content&quot;&gt;
-      &lt;h4 class=&quot;latest-title&quot;&gt;Layer-2 Networks: Which Scaling Solution Wins the Race?&lt;/h4&gt;
-      &lt;div class=&quot;latest-meta&quot;&gt;APR 25, 2026 &#183; 6 MIN READ&lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class=&quot;latest-item&quot;&gt;
-    &lt;div class=&quot;latest-thumb&quot;&gt;&lt;img src=&quot;https://images.unsplash.com/photo-1535320903710-d993d3d77d29?w=150&amp;h=100&amp;fit=crop&quot; alt=&quot;Post&quot;/&gt;&lt;/div&gt;
-    &lt;div class=&quot;latest-content&quot;&gt;
-      &lt;h4 class=&quot;latest-title&quot;&gt;Understanding On-Chain Metrics: A Beginner&amp;#39;s Complete Guide&lt;/h4&gt;
-      &lt;div class=&quot;latest-meta&quot;&gt;APR 24, 2026 &#183; 10 MIN READ&lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class=&quot;latest-item&quot;&gt;
-    &lt;div class=&quot;latest-thumb&quot;&gt;&lt;img src=&quot;https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=150&amp;h=100&amp;fit=crop&quot; alt=&quot;Post&quot;/&gt;&lt;/div&gt;
-    &lt;div class=&quot;latest-content&quot;&gt;
-      &lt;h4 class=&quot;latest-title&quot;&gt;Stablecoin Wars: USDC vs USDT vs DAI in the New Regulatory Landscape&lt;/h4&gt;
-      &lt;div class=&quot;latest-meta&quot;&gt;APR 23, 2026 &#183; 5 MIN READ&lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</b:widget-setting>
-        </b:widget-settings>
-        <b:includable id='main'>
-          <b:if cond='data:title != &quot;&quot;'><h2 class='title'><data:title/></h2></b:if>
-          <div class='widget-content'><data:content/></div>
-        </b:includable>
-      </b:widget>
-
-      <!-- =====================================================
-           Blogger Native Blog Posts Widget
-           [FIX 2] Perbaiki struktur b:if/b:elseif yang salah:
-           SEBELUM: <b:elseif cond='data:post.url'/>  ← salah, tidak ada konten
-                    <b:if cond='...'>...</b:if>        ← nested if tanpa tutup elseif
-           SESUDAH: <b:elseif cond='data:post.url'>   ← buka elseif dengan benar
-                      <b:if>...</b:if>                 ← nested if di dalam elseif
-                    </b:elseif>                         ← tutup elseif
-           ===================================================== -->
-      <b:widget id='Blog1' locked='true' title='Blog Posts' type='Blog' version='2'>
         <b:includable id='main' var='top'>
-          <div class='blog-posts hfeed'>
-            <b:loop values='data:posts' var='post'>
-              <b:include data='post' name='post'/>
-            </b:loop>
-          </div>
-          <b:include name='feedLinks'/>
-          <b:include name='nextprev'/>
+          <b:loop values='data:posts' var='post'>
+            <b:include data='post' name='post'/>
+          </b:loop>
         </b:includable>
 
         <b:includable id='post' var='post'>
-          <div class='post hentry uncustomized-post-template' itemscope='itemscope' itemtype='http://schema.org/BlogPosting'>
-            <div class='post-header'>
-              <h2 class='post-title entry-title' itemprop='name'>
-                <!-- [FIX 2] Struktur if/elseif diperbaiki agar well-formed -->
-                <b:if cond='data:post.link'>
-                  <a expr:href='data:post.link'><data:post.title/></a>
-                <b:elseif cond='data:post.url'>
-                  <b:if cond='data:blog.url != data:post.url'>
-                    <a expr:href='data:post.url'><data:post.title/></a>
-                  <b:else/>
-                    <data:post.title/>
-                  </b:if>
-                </b:elseif>
-                <b:else/>
-                  <data:post.title/>
-                </b:if>
-              </h2>
-              <div class='post-meta-info'>
-                <span class='post-author'><data:post.author/></span>
-                <span>&#183;</span>
-                <span class='post-timestamp'><data:post.dateHeader/></span>
-              </div>
-            </div>
-            <div class='post-body entry-content' itemprop='articleBody'>
+          <div class='post'>
+
+            <h2 class='post-title'>
+              <b:if cond='data:post.url'>
+                <a expr:href='data:post.url'><data:post.title/></a>
+              <b:else/>
+                <data:post.title/>
+              </b:if>
+            </h2>
+
+            <div class='post-body'>
               <data:post.body/>
             </div>
-            <div class='post-footer'>
-              <b:if cond='data:post.hasJumpLink'>
-                <div class='jump-link'>
-                  <a expr:href='data:post.url'><data:post.jumpText/></a>
-                </div>
-              </b:if>
-            </div>
+
           </div>
         </b:includable>
 
-        <b:includable id='nextprev'>
-          <div class='blog-pager' id='blog-pager'>
-            <b:if cond='data:newerPageUrl'>
-              <a class='blog-pager-newer-link' expr:href='data:newerPageUrl'><data:newerPageTitle/></a>
-            </b:if>
-            <b:if cond='data:olderPageUrl'>
-              <a class='blog-pager-older-link' expr:href='data:olderPageUrl'><data:olderPageTitle/></a>
-            </b:if>
-          </div>
-        </b:includable>
-
-        <b:includable id='feedLinks'/>
       </b:widget>
 
     </b:section>
-  </div><!-- end blog-posts-wrapper -->
 
-  <!-- ── SIDEBAR ── -->
-  <div id='sidebar-wrapper'>
-
-    <b:section class='sidebar' id='sidebar-nav' name='Sidebar Navigasi' preferred='yes' showaddelement='yes'>
-      <b:widget id='HTML6' locked='false' title='Menu Navigasi' type='HTML' version='2'>
-        <b:widget-settings>
-          <b:widget-setting name='content'>&lt;div class=&quot;widget-card&quot;&gt;
-  &lt;h3 class=&quot;widget-title&quot;&gt;&#9672; Navigation&lt;/h3&gt;
-  &lt;ul&gt;
-    &lt;li&gt;&lt;a href=&quot;/&quot;&gt;Home&lt;/a&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;a href=&quot;/p/market.html&quot;&gt;Market Overview&lt;/a&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;a href=&quot;/p/portfolio.html&quot;&gt;My Portfolio&lt;/a&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;a href=&quot;/p/news.html&quot;&gt;Crypto News&lt;/a&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;a href=&quot;/p/tutorials.html&quot;&gt;Tutorials&lt;/a&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;a href=&quot;/p/about.html&quot;&gt;About Us&lt;/a&gt;&lt;/li&gt;
-  &lt;/ul&gt;
-&lt;/div&gt;</b:widget-setting>
-        </b:widget-settings>
-        <b:includable id='main'>
-          <b:if cond='data:title != &quot;&quot;'><h2 class='title'><data:title/></h2></b:if>
-          <div class='widget-content'><data:content/></div>
-        </b:includable>
-      </b:widget>
-    </b:section>
-
-    <b:section class='sidebar' id='sidebar-prices' name='Sidebar Harga Crypto' preferred='yes' showaddelement='yes'>
-      <b:widget id='HTML7' locked='false' title='Live Crypto Prices' type='HTML' version='2'>
-        <b:widget-settings>
-          <b:widget-setting name='content'>&lt;div class=&quot;widget-card&quot;&gt;
-  &lt;h3 class=&quot;widget-title&quot;&gt;&#9672; Live Prices&lt;/h3&gt;
-  &lt;div class=&quot;crypto-prices&quot;&gt;
-    &lt;div class=&quot;crypto-price-item&quot;&gt;
-      &lt;div class=&quot;crypto-info&quot;&gt;
-        &lt;div class=&quot;crypto-icon btc&quot;&gt;BTC&lt;/div&gt;
-        &lt;div&gt;&lt;div class=&quot;crypto-name&quot;&gt;Bitcoin&lt;/div&gt;&lt;div class=&quot;crypto-symbol&quot;&gt;BTC&lt;/div&gt;&lt;/div&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;crypto-right&quot;&gt;&lt;div class=&quot;crypto-price&quot;&gt;$67,420&lt;/div&gt;&lt;div class=&quot;crypto-change change-up&quot;&gt;&#9650; 2.34%&lt;/div&gt;&lt;/div&gt;
-    &lt;/div&gt;
-    &lt;div class=&quot;crypto-price-item&quot;&gt;
-      &lt;div class=&quot;crypto-info&quot;&gt;
-        &lt;div class=&quot;crypto-icon eth&quot;&gt;ETH&lt;/div&gt;
-        &lt;div&gt;&lt;div class=&quot;crypto-name&quot;&gt;Ethereum&lt;/div&gt;&lt;div class=&quot;crypto-symbol&quot;&gt;ETH&lt;/div&gt;&lt;/div&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;crypto-right&quot;&gt;&lt;div class=&quot;crypto-price&quot;&gt;$3,280&lt;/div&gt;&lt;div class=&quot;crypto-change change-up&quot;&gt;&#9650; 1.82%&lt;/div&gt;&lt;/div&gt;
-    &lt;/div&gt;
-    &lt;div class=&quot;crypto-price-item&quot;&gt;
-      &lt;div class=&quot;crypto-info&quot;&gt;
-        &lt;div class=&quot;crypto-icon bnb&quot;&gt;BNB&lt;/div&gt;
-        &lt;div&gt;&lt;div class=&quot;crypto-name&quot;&gt;BNB&lt;/div&gt;&lt;div class=&quot;crypto-symbol&quot;&gt;BNB&lt;/div&gt;&lt;/div&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;crypto-right&quot;&gt;&lt;div class=&quot;crypto-price&quot;&gt;$578&lt;/div&gt;&lt;div class=&quot;crypto-change change-down&quot;&gt;&#9660; 0.51%&lt;/div&gt;&lt;/div&gt;
-    &lt;/div&gt;
-    &lt;div class=&quot;crypto-price-item&quot;&gt;
-      &lt;div class=&quot;crypto-info&quot;&gt;
-        &lt;div class=&quot;crypto-icon sol&quot;&gt;SOL&lt;/div&gt;
-        &lt;div&gt;&lt;div class=&quot;crypto-name&quot;&gt;Solana&lt;/div&gt;&lt;div class=&quot;crypto-symbol&quot;&gt;SOL&lt;/div&gt;&lt;/div&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;crypto-right&quot;&gt;&lt;div class=&quot;crypto-price&quot;&gt;$182&lt;/div&gt;&lt;div class=&quot;crypto-change change-up&quot;&gt;&#9650; 4.20%&lt;/div&gt;&lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</b:widget-setting>
-        </b:widget-settings>
-        <b:includable id='main'>
-          <b:if cond='data:title != &quot;&quot;'><h2 class='title'><data:title/></h2></b:if>
-          <div class='widget-content'><data:content/></div>
-        </b:includable>
-      </b:widget>
-    </b:section>
-
-    <b:section class='sidebar' id='sidebar-widgets' name='Sidebar Widget Tambahan' preferred='yes' showaddelement='yes'>
-
-      <b:widget id='HTML8' locked='false' title='Market Sentiment' type='HTML' version='2'>
-        <b:widget-settings>
-          <b:widget-setting name='content'>&lt;div class=&quot;widget-card&quot;&gt;
-  &lt;h3 class=&quot;widget-title&quot;&gt;&#9672; Market Sentiment&lt;/h3&gt;
-  &lt;div class=&quot;sentiment-bar&quot;&gt;
-    &lt;div class=&quot;sentiment-labels&quot;&gt;&lt;span class=&quot;fear-label&quot;&gt;FEAR&lt;/span&gt;&lt;span class=&quot;greed-label&quot;&gt;GREED&lt;/span&gt;&lt;/div&gt;
-    &lt;div class=&quot;sentiment-track&quot;&gt;
-      &lt;div class=&quot;sentiment-fill&quot;&gt;&lt;/div&gt;
-      &lt;div class=&quot;sentiment-indicator&quot;&gt;&lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class=&quot;sentiment-value&quot;&gt;62&lt;/div&gt;
-  &lt;div class=&quot;sentiment-status&quot;&gt;GREED&lt;/div&gt;
-&lt;/div&gt;</b:widget-setting>
-        </b:widget-settings>
-        <b:includable id='main'>
-          <b:if cond='data:title != &quot;&quot;'><h2 class='title'><data:title/></h2></b:if>
-          <div class='widget-content'><data:content/></div>
-        </b:includable>
-      </b:widget>
-
-      <b:widget id='PopularPosts1' locked='false' title='Popular Posts' type='PopularPosts' version='2'>
-        <b:widget-settings>
-          <b:widget-setting name='numItemsToShow'>5</b:widget-setting>
-          <b:widget-setting name='showThumbnails'>false</b:widget-setting>
-          <b:widget-setting name='showSnippets'>false</b:widget-setting>
-        </b:widget-settings>
-        <b:includable id='main'>
-          <div class='widget-card'>
-            <h3 class='widget-title'>&#9672; Popular Posts</h3>
-            <div class='widget-content popular-posts'>
-              <b:if cond='data:posts != []'>
-                <ol>
-                  <b:loop values='data:posts' var='post'>
-                    <li><a expr:href='data:post.href'><data:post.title/></a></li>
-                  </b:loop>
-                </ol>
-              <b:else/>
-                <p class='no-items'>No posts yet.</p>
-              </b:if>
-            </div>
-          </div>
-        </b:includable>
-      </b:widget>
-
-      <b:widget id='Label1' locked='false' title='Categories' type='Label' version='2'>
-        <b:widget-settings>
-          <b:widget-setting name='sorting'>ALPHA</b:widget-setting>
-          <b:widget-setting name='display'>list</b:widget-setting>
-          <b:widget-setting name='selectedLabelsList'/>
-          <b:widget-setting name='showType'>ALL</b:widget-setting>
-          <b:widget-setting name='showFreqNumbers'>false</b:widget-setting>
-        </b:widget-settings>
-        <b:includable id='main'>
-          <div class='widget-card'>
-            <h3 class='widget-title'>&#9672; Categories</h3>
-            <div class='widget-content'>
-              <b:if cond='data:labels != []'>
-                <ul class='label-list'>
-                  <b:loop values='data:labels' var='label'>
-                    <li><a expr:href='data:label.url'><data:label.name/></a></li>
-                  </b:loop>
-                </ul>
-              <b:else/>
-                <p class='no-items'>No labels yet.</p>
-              </b:if>
-            </div>
-          </div>
-        </b:includable>
-      </b:widget>
-
-    </b:section>
-  </div><!-- end sidebar-wrapper -->
-
-</div><!-- end main-wrapper -->
-
-<!-- =====================================================
-     FOOTER — 4 KOLOM
-     ===================================================== -->
-<div id='footer-wrapper'>
-  <div class='footer-grid'>
-
-    <b:section class='footer' id='footer-about' name='Footer: About' preferred='yes' showaddelement='yes'>
-      <b:widget id='HTML9' locked='false' title='Footer About' type='HTML' version='2'>
-        <b:widget-settings>
-          <b:widget-setting name='content'>&lt;div class=&quot;footer-brand&quot;&gt;&#11041; CRYPTONEX&lt;/div&gt;
-&lt;p class=&quot;footer-about-text&quot;&gt;Your trusted source for cryptocurrency news, market analysis, portfolio insights, and blockchain education. Stay informed in the fast-moving world of digital assets.&lt;/p&gt;
-&lt;p class=&quot;footer-about-text&quot;&gt;&amp;copy; 2026 CryptoNex. All rights reserved.&lt;/p&gt;</b:widget-setting>
-        </b:widget-settings>
-        <b:includable id='main'>
-          <div>
-            <h4 class='footer-section-title'>About CryptoNex</h4>
-            <div class='widget-content'><data:content/></div>
-          </div>
-        </b:includable>
-      </b:widget>
-    </b:section>
-
-    <b:section class='footer' id='footer-links' name='Footer: Quick Links' preferred='yes' showaddelement='yes'>
-      <b:widget id='HTML10' locked='false' title='Footer Links' type='HTML' version='2'>
-        <b:widget-settings>
-          <b:widget-setting name='content'>&lt;ul class=&quot;footer-links&quot;&gt;
-  &lt;li&gt;&lt;a href=&quot;/&quot;&gt;Home&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;/p/market.html&quot;&gt;Market Data&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;/p/portfolio.html&quot;&gt;Portfolio Tracker&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;/p/news.html&quot;&gt;Crypto News&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;/p/tutorials.html&quot;&gt;Tutorials&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;/p/privacy.html&quot;&gt;Privacy Policy&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;/p/disclaimer.html&quot;&gt;Disclaimer&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</b:widget-setting>
-        </b:widget-settings>
-        <b:includable id='main'>
-          <div>
-            <h4 class='footer-section-title'>Quick Links</h4>
-            <div class='widget-content'><data:content/></div>
-          </div>
-        </b:includable>
-      </b:widget>
-    </b:section>
-
-    <b:section class='footer' id='footer-contact' name='Footer: Contact' preferred='yes' showaddelement='yes'>
-      <b:widget id='HTML11' locked='false' title='Footer Contact' type='HTML' version='2'>
-        <b:widget-settings>
-          <b:widget-setting name='content'>&lt;div class=&quot;footer-contact-item&quot;&gt;&lt;div class=&quot;footer-contact-icon&quot;&gt;&#9993;&lt;/div&gt;&lt;span&gt;hello@cryptonex.blog&lt;/span&gt;&lt;/div&gt;
-&lt;div class=&quot;footer-contact-item&quot;&gt;&lt;div class=&quot;footer-contact-icon&quot;&gt;&#127760;&lt;/div&gt;&lt;span&gt;www.cryptonex.blog&lt;/span&gt;&lt;/div&gt;
-&lt;div class=&quot;footer-contact-item&quot;&gt;&lt;div class=&quot;footer-contact-icon&quot;&gt;&#128205;&lt;/div&gt;&lt;span&gt;Decentralized, Worldwide&lt;/span&gt;&lt;/div&gt;
-&lt;div class=&quot;footer-contact-item&quot;&gt;&lt;div class=&quot;footer-contact-icon&quot;&gt;&#128172;&lt;/div&gt;&lt;span&gt;t.me/cryptonex_official&lt;/span&gt;&lt;/div&gt;</b:widget-setting>
-        </b:widget-settings>
-        <b:includable id='main'>
-          <div>
-            <h4 class='footer-section-title'>Contact Us</h4>
-            <div class='widget-content'><data:content/></div>
-          </div>
-        </b:includable>
-      </b:widget>
-    </b:section>
-
-    <b:section class='footer' id='footer-social' name='Footer: Social Media' preferred='yes' showaddelement='yes'>
-      <b:widget id='HTML12' locked='false' title='Footer Social Media' type='HTML' version='2'>
-        <b:widget-settings>
-          <b:widget-setting name='content'>&lt;div class=&quot;social-grid&quot;&gt;
-  &lt;a class=&quot;social-btn&quot; href=&quot;#&quot;&gt;&lt;span class=&quot;sicon&quot;&gt;&#120143;&lt;/span&gt;&lt;span&gt;Twitter&lt;/span&gt;&lt;/a&gt;
-  &lt;a class=&quot;social-btn&quot; href=&quot;#&quot;&gt;&lt;span class=&quot;sicon&quot;&gt;&#9654;&lt;/span&gt;&lt;span&gt;YouTube&lt;/span&gt;&lt;/a&gt;
-  &lt;a class=&quot;social-btn&quot; href=&quot;#&quot;&gt;&lt;span class=&quot;sicon&quot;&gt;&#9992;&lt;/span&gt;&lt;span&gt;Telegram&lt;/span&gt;&lt;/a&gt;
-  &lt;a class=&quot;social-btn&quot; href=&quot;#&quot;&gt;&lt;span class=&quot;sicon&quot;&gt;in&lt;/span&gt;&lt;span&gt;LinkedIn&lt;/span&gt;&lt;/a&gt;
-  &lt;a class=&quot;social-btn&quot; href=&quot;#&quot;&gt;&lt;span class=&quot;sicon&quot;&gt;&#128247;&lt;/span&gt;&lt;span&gt;Instagram&lt;/span&gt;&lt;/a&gt;
-  &lt;a class=&quot;social-btn&quot; href=&quot;#&quot;&gt;&lt;span class=&quot;sicon&quot;&gt;&#128172;&lt;/span&gt;&lt;span&gt;Discord&lt;/span&gt;&lt;/a&gt;
-&lt;/div&gt;</b:widget-setting>
-        </b:widget-settings>
-        <b:includable id='main'>
-          <div>
-            <h4 class='footer-section-title'>Follow Us</h4>
-            <div class='widget-content'><data:content/></div>
-          </div>
-        </b:includable>
-      </b:widget>
-    </b:section>
-
-  </div><!-- end footer-grid -->
-
-  <div class='footer-bottom'>
-    <div class='footer-copyright'>
-      &#169; 2026 <span>CRYPTONEX</span> &#183; Built for the decentralized future.
-    </div>
-    <div class='footer-legal'>
-      <a href='/p/privacy.html'>Privacy</a>
-      <a href='/p/disclaimer.html'>Disclaimer</a>
-      <a href='/p/sitemap.html'>Sitemap</a>
-    </div>
   </div>
 
-</div><!-- end footer-wrapper -->
+  <!-- SIDEBAR -->
+  <div>
 
-<!-- =====================================================
-     JAVASCRIPT
-     ===================================================== -->
+    <b:section id='sidebar' showaddelement='yes'>
+
+      <b:widget id='HTML1' type='HTML'>
+        <b:widget-settings>
+          <b:widget-setting name='content'>
+            &lt;div class=&quot;widget-card&quot;&gt;
+            &lt;h3&gt;Market&lt;/h3&gt;
+            BTC $67K ↑
+            &lt;/div&gt;
+          </b:widget-setting>
+        </b:widget-settings>
+
+        <b:includable id='main'>
+          <div class='widget-content'><data:content/></div>
+        </b:includable>
+
+      </b:widget>
+
+    </b:section>
+
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div id='footer-wrapper'>
+
+  <div class='footer-grid'>
+    <div>About</div>
+    <div>Links</div>
+    <div>Contact</div>
+    <div>Social</div>
+  </div>
+
+  <div class='footer-bottom'>
+    &#169; 2026 CRYPTONEX
+  </div>
+
+</div>
+
+<!-- JS -->
 <script>
 //<![CDATA[
-document.addEventListener('DOMContentLoaded', function() {
-  // Mobile nav
-  var toggle = document.getElementById('nav-toggle');
-  var links  = document.getElementById('nav-links');
-  if (toggle && links) {
-    toggle.addEventListener('click', function() {
-      links.classList.toggle('open');
-    });
-  }
+document.addEventListener('DOMContentLoaded', function(){
+  var toggle=document.getElementById('nav-toggle');
+  var links=document.getElementById('nav-links');
 
-  // Scroll-reveal for cards
-  var cards = document.querySelectorAll('.post-card, .latest-item');
-  if ('IntersectionObserver' in window) {
-    var obs = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          entry.target.style.opacity = '1';
-          entry.target.style.transform = 'translateY(0)';
-        }
-      });
-    }, { threshold: 0.1 });
-    cards.forEach(function(card, i) {
-      card.style.opacity = '0';
-      card.style.transform = 'translateY(30px)';
-      card.style.transition = 'opacity 0.5s ease ' + (i * 0.08) + 's, transform 0.5s ease ' + (i * 0.08) + 's, box-shadow 0.3s ease, border-color 0.3s ease';
-      obs.observe(card);
+  if(toggle && links){
+    toggle.addEventListener('click', function(){
+      links.classList.toggle('open');
     });
   }
 });
