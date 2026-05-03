@@ -200,27 +200,54 @@
 <!-- HEADER -->
 <header class="site-header">
   <div class="header-inner">
+
+    <!-- LOGO -->
     <a href="#" class="logo">
       <div class="logo-mark">
-        <svg viewBox="0 0 18 18" fill="none"><path d="M9 2L15 5.5V12.5L9 16L3 12.5V5.5L9 2Z" fill="#0a0c0f" stroke="#0a0c0f" stroke-width="0.5"/><path d="M9 5L12 6.75V10.25L9 12L6 10.25V6.75L9 5Z" fill="#c8f135"/></svg>
+        <svg viewBox="0 0 18 18" fill="none">
+          <path d="M9 2L15 5.5V12.5L9 16L3 12.5V5.5L9 2Z" fill="#0a0c0f" stroke="#0a0c0f" stroke-width="0.5"/>
+          <path d="M9 5L12 6.75V10.25L9 12L6 10.25V6.75L9 5Z" fill="#c8f135"/>
+        </svg>
       </div>
       <span class="logo-text">Monochrome<span>AI</span></span>
     </a>
+
+    <!-- NAV -->
     <nav class="header-nav">
       <a href="#" class="nav-link active">Dashboard</a>
       <a href="#" class="nav-link">Earn</a>
       <a href="#" class="nav-link">Redeem</a>
     </nav>
-    <div style="display:flex;align-items:center;gap:12px;">
-      <button class="btn-reset" onclick="resetAll()">Reset data</button>
+
+    <!-- RIGHT SIDE -->
+    <div class="header-actions">
+
+      <!-- RESET -->
+      <button class="btn-reset" onclick="resetAll()">Reset</button>
+
+      <!-- WALLET -->
+      <button class="btn-wallet" onclick="connectWallet()" id="wallet-btn">
+        Connect Wallet
+      </button>
+
+      <!-- ADDRESS -->
+      <span id="wallet-address" class="wallet-address"></span>
+
+      <!-- POINTS -->
       <div class="header-points">
         <div class="points-icon">
-          <svg viewBox="0 0 11 11" fill="none"><circle cx="5.5" cy="5.5" r="4.5" fill="#0a0c0f"/><path d="M5.5 2.5V5.5L7.5 7" stroke="#c8f135" stroke-width="1.2" stroke-linecap="round"/></svg>
+          <svg viewBox="0 0 11 11" fill="none">
+            <circle cx="5.5" cy="5.5" r="4.5" fill="#0a0c0f"/>
+            <path d="M5.5 2.5V5.5L7.5 7" stroke="#c8f135" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
         </div>
         <span class="points-value" id="hdr-pts">0</span>
         <span class="points-label">pts</span>
       </div>
+
+      <!-- AVATAR -->
       <div class="avatar">AK</div>
+
     </div>
   </div>
 </header>
@@ -612,6 +639,48 @@ renderTasks();
 renderLeaderboard();
 refreshUI();
 setInterval(updateTimers, 1000);
+ // ── WALLET CONNECT (MetaMask) ───────────────────────────────────────────────
+async function connectWallet() {
+  if (!window.ethereum) {
+    toast('⚠️','MetaMask not found','0 pts','Install MetaMask first');
+    return;
+  }
+
+  try {
+    const accounts = await window.ethereum.request({
+      method: 'eth_requestAccounts'
+    });
+
+    const addr = accounts[0];
+
+    // tampilkan di UI (opsional)
+    const el = document.getElementById('wallet-address');
+    if (el) {
+      el.textContent = addr.slice(0,6) + '...' + addr.slice(-4);
+    }
+
+    // tandai task wallet sebagai selesai (pakai sistem kamu)
+    if (!S.completedTasks.includes('wallet')) {
+      S.completedTasks.push('wallet');
+      S.totalTasksDone += 1;
+      save(S);
+
+      const task = TASKS_DEF.find(t => t.id === 'wallet');
+      addPoints(task.pts);
+
+      renderTasks();
+      refreshUI();
+
+      toast('🔗','Wallet Connected','+'+task.pts+' pts','Onboarding completed');
+    } else {
+      toast('🔗','Wallet already connected','0 pts','');
+    }
+
+  } catch (err) {
+    console.log(err);
+    toast('❌','Connection failed','0 pts','User rejected');
+  }
+}
 </script>
 </body>
 </html>
