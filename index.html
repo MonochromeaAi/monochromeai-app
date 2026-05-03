@@ -1,192 +1,617 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>MonochromeAI Swap</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CryptoRewards</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0a0c0f; --surface: #111418; --surface-2: #181c22;
+    --border: rgba(255,255,255,0.07); --border-hover: rgba(255,255,255,0.14);
+    --accent: #c8f135; --accent-dim: rgba(200,241,53,0.12); --accent-glow: rgba(200,241,53,0.25);
+    --text: #f0f2f5; --text-2: #8a919e; --text-3: #4f5560;
+    --gold: #f5c842; --blue: #4fa3e8; --red: #e84f6e; --green: #3dd68c;
+    --font-display: 'Syne', sans-serif; --font-mono: 'DM Mono', monospace;
+    --r: 14px; --r-lg: 20px;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--font-display); background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.5; overflow-x: hidden; }
+  body::before {
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: 0.6;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  }
+  .container { max-width: 980px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
 
-  <!-- ETHERS FIX -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+  .site-header { border-bottom: 1px solid var(--border); padding: 0 24px; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(20px); background: rgba(10,12,15,0.85); }
+  .header-inner { max-width: 980px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 68px; gap: 24px; }
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .logo-mark { width: 32px; height: 32px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+  .logo-mark svg { width: 18px; height: 18px; }
+  .logo-text { font-size: 17px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; }
+  .logo-text span { color: var(--accent); }
+  .header-points { display: flex; align-items: center; gap: 8px; background: var(--accent-dim); border: 1px solid rgba(200,241,53,0.2); border-radius: 999px; padding: 8px 16px 8px 12px; transition: background 0.2s, border-color 0.2s; }
+  .header-points:hover { background: rgba(200,241,53,0.18); border-color: rgba(200,241,53,0.35); }
+  .points-icon { width: 20px; height: 20px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .points-icon svg { width: 11px; height: 11px; }
+  .points-value { font-family: var(--font-mono); font-size: 14px; font-weight: 500; color: var(--accent); }
+  .points-label { font-size: 12px; color: rgba(200,241,53,0.6); font-family: var(--font-mono); }
+  .header-nav { display: flex; align-items: center; gap: 4px; }
+  .nav-link { font-size: 13px; font-weight: 500; color: var(--text-2); text-decoration: none; padding: 6px 12px; border-radius: 8px; transition: color 0.15s, background 0.15s; }
+  .nav-link:hover { color: var(--text); background: var(--surface-2); }
+  .nav-link.active { color: var(--accent); }
+  .avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #4fa3e8 0%, #c8f135 100%); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #0a0c0f; cursor: pointer; flex-shrink: 0; }
 
-  <style>
-    body {
-      margin:0;
-      font-family: Arial;
-      background:#05070d;
-      color:#fff;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      height:100vh;
-    }
+  .points-hero { padding: 52px 0 36px; animation: fadeUp 0.5s ease both; }
+  .points-hero-inner { display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: end; }
+  .greeting { font-size: 13px; font-weight: 500; color: var(--text-3); letter-spacing: 1.5px; text-transform: uppercase; font-family: var(--font-mono); margin-bottom: 10px; }
+  .points-big { font-size: 68px; font-weight: 800; line-height: 1; letter-spacing: -3px; color: var(--text); margin-bottom: 4px; }
+  .points-big span { color: var(--accent); }
+  .points-subtitle { font-size: 14px; color: var(--text-2); font-family: var(--font-mono); }
+  .points-stats { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+  .stat-pill { display: flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 7px 14px; font-family: var(--font-mono); font-size: 12px; white-space: nowrap; }
+  .stat-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .stat-dot.green { background: var(--green); box-shadow: 0 0 6px var(--green); }
+  .stat-dot.gold  { background: var(--gold); }
+  .stat-dot.blue  { background: var(--blue); }
+  .stat-pill strong { color: var(--text); font-weight: 500; }
+  .stat-pill span { color: var(--text-2); }
+  .progress-bar-wrap { margin-top: 24px; background: var(--surface-2); border-radius: 999px; height: 6px; overflow: hidden; position: relative; }
+  .progress-bar-fill { height: 100%; background: var(--accent); border-radius: 999px; position: relative; transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
+  .progress-bar-fill::after { content: ''; position: absolute; right: 0; top: 50%; transform: translateY(-50%); width: 10px; height: 10px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 8px var(--accent-glow); }
+  .progress-labels { display: flex; justify-content: space-between; margin-top: 8px; font-family: var(--font-mono); font-size: 11px; color: var(--text-3); }
+  .progress-labels span { color: var(--accent); }
 
-    .card {
-      background:#0b0f19;
-      padding:25px;
-      border-radius:15px;
-      width:350px;
-    }
+  .main-grid { display: grid; grid-template-columns: 1fr 340px; gap: 24px; padding-bottom: 80px; }
+  .left-col { display: flex; flex-direction: column; gap: 24px; }
+  .right-col { display: flex; flex-direction: column; gap: 24px; }
 
-    input, select {
-      width:100%;
-      padding:10px;
-      margin:10px 0;
-      border:none;
-      border-radius:8px;
-      background:#111827;
-      color:#fff;
-    }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden; }
+  .card-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px 0; margin-bottom: 20px; }
+  .card-title { font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: -0.2px; display: flex; align-items: center; gap: 8px; }
+  .card-title-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .icon-gold { background: rgba(245,200,66,0.15); }
+  .icon-blue { background: rgba(79,163,232,0.15); }
+  .card-title-icon svg { width: 14px; height: 14px; }
+  .card-action { font-size: 12px; font-weight: 500; color: var(--text-2); text-decoration: none; font-family: var(--font-mono); padding: 5px 10px; border: 1px solid var(--border); border-radius: 6px; transition: all 0.15s; }
+  .card-action:hover { color: var(--text); border-color: var(--border-hover); background: var(--surface-2); }
+  .divider { height: 1px; background: var(--border); margin: 0 24px 20px; }
 
-    button {
-      width:100%;
-      padding:12px;
-      margin-top:10px;
-      border:none;
-      border-radius:8px;
-      background:#f7931a;
-      color:#000;
-      font-weight:bold;
-      cursor:pointer;
-    }
+  .checkin-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; padding: 0 24px 24px; }
+  .day-item { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 6px; border-radius: var(--r); border: 1px solid var(--border); background: var(--surface-2); transition: all 0.2s; }
+  .day-item.done  { border-color: rgba(61,214,140,0.3); background: rgba(61,214,140,0.07); }
+  .day-item.today { border-color: var(--accent); background: var(--accent-dim); box-shadow: 0 0 20px rgba(200,241,53,0.1); }
+  .day-item.locked { opacity: 0.4; }
+  .day-label  { font-family: var(--font-mono); font-size: 10px; font-weight: 500; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.5px; }
+  .day-item.today  .day-label { color: rgba(200,241,53,0.7); }
+  .day-item.done   .day-label { color: rgba(61,214,140,0.6); }
+  .day-reward { font-family: var(--font-mono); font-size: 12px; font-weight: 500; color: var(--text-2); }
+  .day-item.today .day-reward { color: var(--accent); font-weight: 600; }
+  .day-item.done  .day-reward { color: var(--green); }
+  .day-check { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+  .day-item.done  .day-check { background: rgba(61,214,140,0.2); }
+  .day-item.today .day-check { background: var(--accent-dim); }
+  .day-item:not(.done):not(.today) .day-check { background: var(--surface); border: 1px solid var(--border); }
+  .day-check svg { width: 10px; height: 10px; }
 
-    .wallet {
-      background:#111827;
-    }
-  </style>
+  .checkin-cta { margin: 0 24px 24px; display: flex; align-items: center; justify-content: space-between; background: var(--accent-dim); border: 1px solid rgba(200,241,53,0.2); border-radius: var(--r); padding: 16px 20px; }
+  .checkin-info { display: flex; flex-direction: column; gap: 2px; }
+  .checkin-info strong { font-size: 14px; font-weight: 700; color: var(--text); }
+  .checkin-info p { font-size: 12px; color: var(--text-2); font-family: var(--font-mono); }
+  .btn-checkin { display: flex; align-items: center; gap: 8px; background: var(--accent); color: #0a0c0f; border: none; border-radius: 10px; padding: 11px 20px; font-family: var(--font-display); font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+  .btn-checkin:hover:not(:disabled) { background: #d8ff42; transform: translateY(-1px); }
+  .btn-checkin:active:not(:disabled) { transform: translateY(0); }
+  .btn-checkin:disabled { background: var(--surface-2); color: var(--text-3); cursor: default; animation: none !important; border: 1px solid var(--border); }
+  .streak-badge { display: inline-flex; align-items: center; gap: 4px; background: rgba(245,200,66,0.15); border: 1px solid rgba(245,200,66,0.25); border-radius: 999px; padding: 3px 10px; font-size: 11px; font-family: var(--font-mono); font-weight: 500; color: var(--gold); margin-left: 8px; }
+
+  .tasks-list { display: flex; flex-direction: column; padding: 0 24px 24px; gap: 10px; }
+  .task-item { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: var(--r); border: 1px solid var(--border); background: var(--surface-2); cursor: pointer; transition: all 0.18s; user-select: none; }
+  .task-item:hover:not(.completed) { border-color: var(--border-hover); transform: translateX(2px); }
+  .task-item.completed { opacity: 0.5; border-color: rgba(61,214,140,0.2); background: rgba(61,214,140,0.04); cursor: default; pointer-events: none; }
+  .task-checkbox { width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+  .task-item:not(.completed) .task-checkbox { border: 1.5px solid var(--border-hover); background: transparent; }
+  .task-item.completed .task-checkbox { background: rgba(61,214,140,0.2); border: 1.5px solid rgba(61,214,140,0.4); }
+  .task-checkbox svg { width: 11px; height: 11px; }
+  .task-body { flex: 1; min-width: 0; }
+  .task-name { font-size: 14px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .task-item.completed .task-name { text-decoration: line-through; color: var(--text-2); }
+  .task-meta { display: flex; align-items: center; gap: 8px; margin-top: 3px; }
+  .task-category { font-size: 11px; font-family: var(--font-mono); color: var(--text-3); text-transform: uppercase; letter-spacing: 0.5px; }
+  .task-difficulty { display: flex; gap: 2px; }
+  .diff-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--border-hover); }
+  .diff-dot.filled { background: var(--gold); }
+  .task-reward { display: flex; align-items: center; gap: 5px; font-family: var(--font-mono); font-size: 13px; font-weight: 500; color: var(--accent); flex-shrink: 0; }
+  .task-reward-icon { width: 16px; height: 16px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+  .task-reward-icon svg { width: 8px; height: 8px; }
+  .task-timer { font-size: 11px; font-family: var(--font-mono); color: var(--red); background: rgba(232,79,110,0.1); border: 1px solid rgba(232,79,110,0.2); padding: 2px 8px; border-radius: 4px; flex-shrink: 0; }
+  .tasks-footer { padding: 0 24px 24px; display: flex; align-items: center; justify-content: space-between; }
+  .tasks-progress-text { font-size: 12px; font-family: var(--font-mono); color: var(--text-3); }
+  .tasks-progress-text strong { color: var(--text-2); }
+  .btn-view-all { font-size: 12px; font-weight: 600; color: var(--text-2); text-decoration: none; font-family: var(--font-mono); display: flex; align-items: center; gap: 4px; transition: color 0.15s; }
+  .btn-view-all:hover { color: var(--accent); }
+
+  .mini-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; animation: fadeUp 0.5s 0.25s ease both; }
+  .mini-stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 16px 18px; }
+  .mini-stat-label { font-size: 11px; font-family: var(--font-mono); color: var(--text-3); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
+  .mini-stat-value { font-size: 22px; font-weight: 800; letter-spacing: -1px; color: var(--text); line-height: 1; }
+  .mini-stat-sub { font-size: 11px; font-family: var(--font-mono); color: var(--text-3); margin-top: 4px; }
+
+  .podium { display: flex; align-items: flex-end; justify-content: center; gap: 8px; padding: 0 24px 24px; margin-top: 4px; }
+  .podium-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .podium-avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #0a0c0f; position: relative; }
+  .podium-crown { position: absolute; top: -12px; font-size: 14px; line-height: 1; }
+  .podium-item:nth-child(1) .podium-avatar { background: linear-gradient(135deg, #c0c8d8 0%, #8a95a5 100%); }
+  .podium-item:nth-child(2) .podium-avatar { background: linear-gradient(135deg, #f5c842 0%, #e8a220 100%); width: 46px; height: 46px; font-size: 16px; }
+  .podium-item:nth-child(3) .podium-avatar { background: linear-gradient(135deg, #c87941 0%, #a05c2a 100%); }
+  .podium-name { font-size: 11px; font-weight: 600; color: var(--text-2); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
+  .podium-pts { font-family: var(--font-mono); font-size: 11px; color: var(--text-3); }
+  .podium-bar { width: 100%; border-radius: 6px 6px 0 0; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 13px; font-weight: 500; }
+  .podium-item:nth-child(1) .podium-bar { height: 52px; background: rgba(192,200,216,0.08); color: #8a95a5; }
+  .podium-item:nth-child(2) .podium-bar { height: 72px; background: rgba(245,200,66,0.1); border-color: rgba(245,200,66,0.2); color: var(--gold); }
+  .podium-item:nth-child(3) .podium-bar { height: 40px; background: rgba(200,120,65,0.08); color: #c87941; }
+  .lb-list { display: flex; flex-direction: column; padding: 0 24px 24px; gap: 2px; }
+  .lb-row { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; transition: background 0.15s; cursor: pointer; }
+  .lb-row:hover { background: var(--surface-2); }
+  .lb-row.me { background: var(--accent-dim); border: 1px solid rgba(200,241,53,0.15); }
+  .lb-rank { font-family: var(--font-mono); font-size: 12px; font-weight: 500; color: var(--text-3); width: 20px; text-align: center; flex-shrink: 0; }
+  .lb-row.me .lb-rank { color: var(--accent); }
+  .lb-avatar { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+  .lb-info { flex: 1; min-width: 0; }
+  .lb-name { font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .lb-row.me .lb-name::after { content: ' (you)'; font-weight: 400; color: var(--accent); font-size: 11px; }
+  .lb-change { font-size: 10px; font-family: var(--font-mono); margin-top: 1px; }
+  .lb-change.up { color: var(--green); }
+  .lb-change.down { color: var(--red); }
+  .lb-change.same { color: var(--text-3); }
+  .lb-score { font-family: var(--font-mono); font-size: 13px; font-weight: 500; color: var(--text-2); flex-shrink: 0; }
+  .lb-row.me .lb-score { color: var(--accent); }
+
+  /* TOAST */
+  #toast-container { position: fixed; bottom: 28px; right: 28px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+  .toast { display: flex; align-items: center; gap: 12px; background: var(--surface); border: 1px solid var(--border-hover); border-radius: 14px; padding: 14px 18px; font-size: 13px; font-weight: 600; color: var(--text); pointer-events: auto; animation: toastIn 0.35s cubic-bezier(0.34,1.56,0.64,1) both; min-width: 240px; }
+  .toast.out { animation: toastOut 0.25s ease forwards; }
+  .toast-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 14px; }
+  .toast-pts { font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: var(--accent); }
+  .toast-sub { font-size: 11px; font-family: var(--font-mono); color: var(--text-3); margin-top: 2px; font-weight: 400; }
+
+  /* RESET BUTTON */
+  .btn-reset { font-size: 11px; font-family: var(--font-mono); color: var(--text-3); background: none; border: 1px solid var(--border); border-radius: 6px; padding: 4px 10px; cursor: pointer; transition: all 0.15s; }
+  .btn-reset:hover { color: var(--red); border-color: rgba(232,79,110,0.4); }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes toastIn { from{opacity:0;transform:translateX(40px) scale(0.9)} to{opacity:1;transform:translateX(0) scale(1)} }
+  @keyframes toastOut { from{opacity:1} to{opacity:0;transform:translateX(40px)} }
+  @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(200,241,53,0.3)} 50%{box-shadow:0 0 0 6px rgba(200,241,53,0)} }
+  @keyframes bump { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
+  @keyframes pop { 0%{transform:scale(1)} 40%{transform:scale(1.06)} 100%{transform:scale(1)} }
+  .checkin-card { animation: fadeUp 0.5s 0.1s ease both; }
+  .tasks-card   { animation: fadeUp 0.5s 0.15s ease both; }
+  .leaderboard-card { animation: fadeUp 0.5s 0.2s ease both; }
+  .btn-checkin:not(:disabled) { animation: pulse 2s 1s infinite; }
+  .bump { animation: bump 0.35s ease; }
+  .pop  { animation: pop 0.3s ease; }
+</style>
 </head>
-
 <body>
 
-<div class="card">
+<div id="toast-container"></div>
 
-  <h2 style="text-align:center;">MonochromeAI Swap</h2>
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="#" class="logo">
+      <div class="logo-mark">
+        <svg viewBox="0 0 18 18" fill="none"><path d="M9 2L15 5.5V12.5L9 16L3 12.5V5.5L9 2Z" fill="#0a0c0f" stroke="#0a0c0f" stroke-width="0.5"/><path d="M9 5L12 6.75V10.25L9 12L6 10.25V6.75L9 5Z" fill="#c8f135"/></svg>
+      </div>
+      <span class="logo-text">Crypto<span>Rx</span></span>
+    </a>
+    <nav class="header-nav">
+      <a href="#" class="nav-link active">Dashboard</a>
+      <a href="#" class="nav-link">Earn</a>
+      <a href="#" class="nav-link">Redeem</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button class="btn-reset" onclick="resetAll()">Reset data</button>
+      <div class="header-points">
+        <div class="points-icon">
+          <svg viewBox="0 0 11 11" fill="none"><circle cx="5.5" cy="5.5" r="4.5" fill="#0a0c0f"/><path d="M5.5 2.5V5.5L7.5 7" stroke="#c8f135" stroke-width="1.2" stroke-linecap="round"/></svg>
+        </div>
+        <span class="points-value" id="hdr-pts">0</span>
+        <span class="points-label">pts</span>
+      </div>
+      <div class="avatar">AK</div>
+    </div>
+  </div>
+</header>
 
-  <!-- CONNECT -->
-  <button class="wallet" onclick="connectWallet()" id="connectBtn">
-    Connect Wallet
-  </button>
+<div class="container">
+  <!-- HERO -->
+  <section class="points-hero">
+    <div class="points-hero-inner">
+      <div>
+        <p class="greeting">Your balance</p>
+        <h1 class="points-big" id="hero-pts">0</h1>
+        <p class="points-subtitle">CryptoRx Points · Updated just now</p>
+        <div class="progress-bar-wrap" style="margin-top:20px;max-width:460px;">
+          <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+        </div>
+        <div class="progress-labels" style="max-width:460px;">
+          <span id="progress-cur">0 pts</span>
+          <span style="color:var(--text-3);">→ Gold tier at 40,000 pts</span>
+        </div>
+      </div>
+      <div class="points-stats">
+        <div class="stat-pill"><div class="stat-dot green"></div><span>Today earned</span><strong id="stat-today">+0 pts</strong></div>
+        <div class="stat-pill"><div class="stat-dot gold"></div><span>Streak</span><strong id="stat-streak">0 days</strong></div>
+        <div class="stat-pill"><div class="stat-dot blue"></div><span>Tasks done</span><strong id="stat-tasks">0 / 5</strong></div>
+      </div>
+    </div>
+  </section>
 
-  <p id="walletAddress" style="font-size:12px;text-align:center;"></p>
+  <div class="main-grid">
+    <div class="left-col">
 
-  <!-- TOKEN -->
-  <select id="fromToken">
-    <option value="ETH">ETH</option>
-    <option value="USDC">USDC</option>
-  </select>
+      <!-- CHECK-IN -->
+      <div class="card checkin-card">
+        <div class="card-header">
+          <div class="card-title">
+            <div class="card-title-icon icon-gold">
+              <svg viewBox="0 0 14 14" fill="none"><rect x="1" y="3" width="12" height="10" rx="2" stroke="#f5c842" stroke-width="1.2"/><path d="M5 1V4M9 1V4" stroke="#f5c842" stroke-width="1.2" stroke-linecap="round"/><path d="M4 8H10M4 10.5H7.5" stroke="#f5c842" stroke-width="1.2" stroke-linecap="round"/></svg>
+            </div>
+            Daily check-in
+            <span class="streak-badge" id="streak-badge">🔥 0-day streak</span>
+          </div>
+          <a href="#" class="card-action">History</a>
+        </div>
+        <div class="checkin-days" id="checkin-days"></div>
+        <div class="checkin-cta">
+          <div class="checkin-info">
+            <strong id="checkin-title">Claim your daily reward</strong>
+            <p id="checkin-sub">+10 pts · Check in to start your streak</p>
+          </div>
+          <button class="btn-checkin" id="btn-checkin" onclick="doCheckIn()">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5L8.5 5.5H12.5L9.5 8L10.5 12L7 9.5L3.5 12L4.5 8L1.5 5.5H5.5L7 1.5Z" fill="#0a0c0f"/></svg>
+            Check in now
+          </button>
+        </div>
+      </div>
 
-  <select id="toToken">
-    <option value="USDC">USDC</option>
-    <option value="ETH">ETH</option>
-  </select>
+      <!-- TASKS -->
+      <div class="card tasks-card">
+        <div class="card-header">
+          <div class="card-title">
+            <div class="card-title-icon icon-blue">
+              <svg viewBox="0 0 14 14" fill="none"><rect x="1.5" y="1.5" width="11" height="11" rx="2" stroke="#4fa3e8" stroke-width="1.2"/><path d="M4 7L6 9L10 5" stroke="#4fa3e8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            Today's tasks
+          </div>
+          <a href="#" class="card-action">View all →</a>
+        </div>
+        <div class="tasks-list" id="tasks-list"></div>
+        <div class="divider"></div>
+        <div class="tasks-footer">
+          <span class="tasks-progress-text" id="tasks-footer"></span>
+          <a href="#" class="btn-view-all">View all tasks →</a>
+        </div>
+      </div>
 
-  <!-- AMOUNT -->
-  <input type="number" id="amount" placeholder="Amount">
+    </div>
 
-  <button onclick="swap()">Swap</button>
+    <!-- RIGHT -->
+    <div class="right-col">
+      <div class="mini-stats">
+        <div class="mini-stat">
+          <div class="mini-stat-label">Total earned</div>
+          <div class="mini-stat-value" style="color:var(--accent);" id="ms-total">0</div>
+          <div class="mini-stat-sub">all time</div>
+        </div>
+        <div class="mini-stat">
+          <div class="mini-stat-label">Tasks done</div>
+          <div class="mini-stat-value" id="ms-tasks">0</div>
+          <div class="mini-stat-sub">all time</div>
+        </div>
+        <div class="mini-stat">
+          <div class="mini-stat-label">Today</div>
+          <div class="mini-stat-value" style="color:var(--green);" id="ms-today">+0</div>
+          <div class="mini-stat-sub">pts earned</div>
+        </div>
+        <div class="mini-stat">
+          <div class="mini-stat-label">Tier</div>
+          <div class="mini-stat-value" id="ms-tier" style="color:var(--blue);">Bronze</div>
+          <div class="mini-stat-sub" id="ms-tier-sub">earn more pts</div>
+        </div>
+      </div>
 
+      <div class="card leaderboard-card">
+        <div class="card-header">
+          <div class="card-title">
+            <div class="card-title-icon icon-gold">
+              <svg viewBox="0 0 14 14" fill="none"><path d="M7 1L8.5 4.5L12.5 5L9.5 7.5L10.5 11.5L7 9.5L3.5 11.5L4.5 7.5L1.5 5L5.5 4.5L7 1Z" stroke="#f5c842" stroke-width="1.2" stroke-linejoin="round"/></svg>
+            </div>
+            Leaderboard
+          </div>
+          <a href="#" class="card-action">Global →</a>
+        </div>
+        <div class="podium">
+          <div class="podium-item">
+            <div class="podium-avatar">MJ</div>
+            <div class="podium-name">Marcus J.</div>
+            <div class="podium-pts">31,200</div>
+            <div class="podium-bar">2</div>
+          </div>
+          <div class="podium-item">
+            <div class="podium-avatar" style="position:relative;"><span class="podium-crown">👑</span>ZK</div>
+            <div class="podium-name">Zoe K.</div>
+            <div class="podium-pts">44,880</div>
+            <div class="podium-bar">1</div>
+          </div>
+          <div class="podium-item">
+            <div class="podium-avatar">PR</div>
+            <div class="podium-name">Paolo R.</div>
+            <div class="podium-pts">28,750</div>
+            <div class="podium-bar">3</div>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="lb-list" id="lb-list"></div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
-
-// CONNECT WALLET
-async function connectWallet() {
-  if (window.ethereum) {
-    try {
-      const accounts = await window.ethereum.request({
-        method: "eth_requestAccounts"
-      });
-
-      document.getElementById("connectBtn").innerText = "Connected";
-      document.getElementById("walletAddress").innerText =
-        accounts[0].slice(0,6) + "..." + accounts[0].slice(-4);
-
-    } catch (err) {
-      alert("User rejected");
-    }
-  } else {
-    alert("Install wallet dulu");
-  }
-}
-
-// CONFIG BASE + UNISWAP
-const ROUTER = "0x2626664c2603336E57B271c5C0b26F421741e481";
-
-const TOKENS = {
-  ETH: "0x4200000000000000000000000000000000000006",
-  USDC: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
-};
-
-// SWAP FUNCTION
-async function swap() {
-
-  if (!window.ethereum) {
-    alert("Connect wallet dulu");
-    return;
-  }
-
-  const amountInput = document.getElementById("amount").value;
-  const from = document.getElementById("fromToken").value;
-  const to = document.getElementById("toToken").value;
-
-  if (!amountInput || amountInput <= 0) {
-    alert("Masukkan amount");
-    return;
-  }
-
-  try {
-    const accounts = await window.ethereum.request({
-      method: "eth_accounts"
-    });
-
-    const recipient = accounts[0];
-
-    if (!recipient) {
-      alert("Wallet belum connect");
-      return;
-    }
-
-    console.log("FROM:", TOKENS[from]);
-    console.log("TO:", TOKENS[to]);
-    console.log("USER:", recipient);
-
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-
-    const router = new ethers.Contract(
-      ROUTER,
-      [
-        "function exactInputSingle((address,address,uint24,address,uint256,uint256,uint256,uint160)) payable returns (uint256)"
-      ],
-      signer
-    );
-
-    const amountIn = ethers.utils.parseEther(amountInput);
-
-    const params = [
-  TOKENS[from],                                  // tokenIn
-  TOKENS[to],                                    // tokenOut
-  3000,                                          // fee
-  recipient,                                     // recipient
-  Math.floor(Date.now() / 1000) + 600,           // deadline
-  amountIn,                                      // amountIn
-  0,                                             // amountOutMinimum
-  0                                              // sqrtPriceLimitX96
+// ── CONSTANTS ─────────────────────────────────────────────────────────────────
+const TASKS_DEF = [
+  { id:'wallet', name:'Connect your wallet',          cat:'Onboarding', diff:1, pts:200 },
+  { id:'swap',   name:'Make your first swap on DEX',  cat:'Trading',    diff:2, pts:500, timer:true },
+  { id:'stake',  name:'Stake 0.01 ETH for 7 days',   cat:'Staking',    diff:3, pts:1200 },
+  { id:'refer',  name:'Refer a friend to CryptoRx',  cat:'Social',     diff:1, pts:750 },
+  { id:'kyc',    name:'Complete identity verification',cat:'Account',   diff:2, pts:400 },
+];
+const DAY_LABELS  = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const DAY_REWARDS = [50,75,100,125,150,200,500];
+const CHECKIN_PTS = 10;
+const GOLD_TIER   = 40000;
+const LB_DATA = [
+  { rank:4, init:'SL', name:'Sofia L.',   pts:27400, col:'rgba(79,163,232,0.2)',  tc:'#4fa3e8', chg:'up',   mv:'▲ 2' },
+  { rank:5, init:'HN', name:'Hiroshi N.', pts:26100, col:'rgba(61,214,140,0.2)',  tc:'#3dd68c', chg:'same', mv:'— same' },
+  { rank:6, init:'AM', name:'Aisha M.',   pts:25900, col:'rgba(245,200,66,0.2)',  tc:'#f5c842', chg:'down', mv:'▼ 1' },
+  { rank:7, init:'AK', name:'Alex K.',    pts:null,  col:'rgba(200,241,53,0.2)',  tc:'#c8f135', chg:'up',   mv:'▲ 3', me:true },
+  { rank:8, init:'TV', name:'Tomas V.',   pts:23550, col:'rgba(232,79,110,0.2)', tc:'#e84f6e', chg:'down', mv:'▼ 2' },
 ];
 
-const tx = await router.exactInputSingle(params, {
-  value: amountIn
-});
-    alert("TX: " + tx.hash);
+// ── STATE ─────────────────────────────────────────────────────────────────────
+const STORAGE_KEY = 'cryptorx_v3';
+function todayStr() { return new Date().toISOString().slice(0,10); }
 
-    await tx.wait();
+function defaultState() {
+  return { points:0, totalEarned:0, todayEarned:0, todayDate:'', streak:0,
+           lastCheckin:'', checkinDone:false, completedTasks:[], totalTasksDone:0 };
+}
 
-    alert("Swap berhasil 🚀");
+function load() {
+  try { return Object.assign(defaultState(), JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}')); }
+  catch(e) { return defaultState(); }
+}
 
-  } catch (err) {
-    console.error(err);
-    alert("Swap gagal: " + err.message);
+function save(s) { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
+
+let S = load();
+// reset daily fields when date changes
+if (S.todayDate !== todayStr()) {
+  S.todayDate      = todayStr();
+  S.todayEarned    = 0;
+  S.checkinDone    = false;
+  S.completedTasks = [];
+  save(S);
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+function toast(icon, title, pts, sub) {
+  const wrap = document.getElementById('toast-container');
+  const el   = document.createElement('div');
+  el.className = 'toast';
+  el.innerHTML = `<div class="toast-icon">${icon}</div><div>
+    <div style="display:flex;align-items:center;gap:8px;">${title}<span class="toast-pts">${pts}</span></div>
+    <div class="toast-sub">${sub}</div></div>`;
+  wrap.appendChild(el);
+  setTimeout(() => { el.classList.add('out'); setTimeout(()=>el.remove(),300); }, 3200);
+}
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+function fmt(n) { return Math.round(n).toLocaleString(); }
+function bump(id) { const e=document.getElementById(id); e.classList.remove('bump'); void e.offsetWidth; e.classList.add('bump'); }
+
+function tier(pts) {
+  if (pts>=40000) return {name:'Gold',    color:'var(--gold)', sub:'Max tier reached!'};
+  if (pts>=15000) return {name:'Silver',  color:'var(--blue)', sub:`${fmt(40000-pts)} pts to Gold`};
+  if (pts>=5000)  return {name:'Bronze+', color:'#c87941',     sub:`${fmt(15000-pts)} pts to Silver`};
+  return                  {name:'Bronze', color:'#c87941',     sub:`${fmt(5000-pts)} pts to Bronze+`};
+}
+
+// ── ADD POINTS ────────────────────────────────────────────────────────────────
+function addPoints(pts) {
+  S.points      += pts;
+  S.totalEarned += pts;
+  S.todayEarned += pts;
+  save(S);
+  refreshUI();
+  bump('hero-pts');
+}
+
+// ── REFRESH UI ────────────────────────────────────────────────────────────────
+function refreshUI() {
+  const p = S.points;
+  // header
+  document.getElementById('hdr-pts').textContent = fmt(p);
+  // hero number
+  document.getElementById('hero-pts').textContent = fmt(p);
+  // progress
+  const pct = Math.min(100, (p/GOLD_TIER)*100);
+  document.getElementById('progress-fill').style.width = pct.toFixed(1)+'%';
+  document.getElementById('progress-cur').textContent  = fmt(p)+' pts';
+  // stat pills
+  document.getElementById('stat-today').textContent  = '+'+fmt(S.todayEarned)+' pts';
+  document.getElementById('stat-streak').textContent = S.streak+' day'+(S.streak!==1?'s':'');
+  document.getElementById('stat-tasks').textContent  = S.completedTasks.length+' / '+TASKS_DEF.length;
+  // streak badge
+  document.getElementById('streak-badge').textContent = '🔥 '+S.streak+'-day streak';
+  // mini stats
+  document.getElementById('ms-total').textContent = fmt(S.totalEarned);
+  document.getElementById('ms-tasks').textContent = S.totalTasksDone;
+  document.getElementById('ms-today').textContent = '+'+fmt(S.todayEarned);
+  const t = tier(p);
+  const te = document.getElementById('ms-tier');
+  te.textContent   = t.name;
+  te.style.color   = t.color;
+  document.getElementById('ms-tier-sub').textContent = t.sub;
+  // tasks footer
+  const done = S.completedTasks.length;
+  document.getElementById('tasks-footer').innerHTML =
+    `<strong>${done} / ${TASKS_DEF.length}</strong> tasks completed today`;
+  // lb my score
+  document.querySelectorAll('.lb-me-score').forEach(el => el.textContent = fmt(p));
+}
+
+// ── CHECK-IN ──────────────────────────────────────────────────────────────────
+function renderCheckin() {
+  const dow = new Date().getDay(); // 0=Sun
+  const todayIdx = dow === 0 ? 6 : dow - 1; // Mon=0, Sun=6
+
+  const CHECK_DONE = `<svg viewBox="0 0 10 10" fill="none"><path d="M2 5L4 7L8 3" stroke="#3dd68c" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  const CHECK_TODAY_DONE = `<svg viewBox="0 0 10 10" fill="none"><path d="M2 5L4 7L8 3" stroke="#c8f135" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  const CHECK_TODAY = `<svg viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="3" fill="#c8f135"/></svg>`;
+  const CHECK_LOCK  = `<svg viewBox="0 0 10 10" fill="none"><rect x="2.5" y="4.5" width="5" height="4" rx="1" stroke="#4f5560" stroke-width="1"/><path d="M3.5 4.5V3.5a1.5 1.5 0 013 0v1" stroke="#4f5560" stroke-width="1"/></svg>`;
+
+  document.getElementById('checkin-days').innerHTML = DAY_LABELS.map((lbl,i) => {
+    let cls='day-item', icon='';
+    if      (i <  todayIdx) { cls+=' done';   icon=CHECK_DONE; }
+    else if (i === todayIdx) { cls+=' today';  icon=S.checkinDone ? CHECK_TODAY_DONE : CHECK_TODAY; }
+    else                     { cls+=' locked'; icon=CHECK_LOCK; }
+    return `<div class="${cls}"><div class="day-check">${icon}</div>
+      <span class="day-label">${lbl}</span>
+      <span class="day-reward">+${DAY_REWARDS[i]}</span></div>`;
+  }).join('');
+
+  const btn = document.getElementById('btn-checkin');
+  if (S.checkinDone) {
+    btn.disabled = true;
+    btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7L6 10L11 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Checked in`;
+    document.getElementById('checkin-title').textContent = "You're checked in today!";
+    document.getElementById('checkin-sub').textContent   = 'Come back tomorrow · streak: '+S.streak+' day'+(S.streak!==1?'s':'');
+  } else {
+    btn.disabled = false;
+    btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5L8.5 5.5H12.5L9.5 8L10.5 12L7 9.5L3.5 12L4.5 8L1.5 5.5H5.5L7 1.5Z" fill="#0a0c0f"/></svg>Check in now`;
+    document.getElementById('checkin-title').textContent = 'Claim your daily reward';
+    document.getElementById('checkin-sub').textContent   = '+'+CHECKIN_PTS+' pts · Keeps your streak alive';
   }
 }
 
-</script>
+function doCheckIn() {
+  if (S.checkinDone) return;
+  // streak logic
+  const yest = new Date(); yest.setDate(yest.getDate()-1);
+  const yStr  = yest.toISOString().slice(0,10);
+  if      (S.lastCheckin === '')    S.streak = 1;
+  else if (S.lastCheckin === yStr)  S.streak += 1;
+  else if (S.lastCheckin !== todayStr()) S.streak = 1;
+  S.lastCheckin = todayStr();
+  S.checkinDone = true;
+  save(S);
+  addPoints(CHECKIN_PTS);
+  renderCheckin();
+  toast('⭐','Daily check-in!','+'+CHECKIN_PTS+' pts','🔥 '+S.streak+'-day streak');
+}
 
+// ── TASKS ─────────────────────────────────────────────────────────────────────
+const RSVG = `<div class="task-reward-icon"><svg viewBox="0 0 8 8" fill="none"><circle cx="4" cy="4" r="3" fill="#0a0c0f"/><path d="M4 1.5V4L5.5 5.5" stroke="#c8f135" stroke-width="0.8" stroke-linecap="round"/></svg></div>`;
+const CHECK_SVG = `<svg viewBox="0 0 11 11" fill="none"><path d="M2 5.5L4.5 8L9 3" stroke="#3dd68c" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+function dots(n) { return [1,2,3].map(i=>`<div class="diff-dot${i<=n?' filled':''}"></div>`).join(''); }
+
+function renderTasks() {
+  document.getElementById('tasks-list').innerHTML = TASKS_DEF.map(t => {
+    const done = S.completedTasks.includes(t.id);
+    const ptsLabel = t.pts >= 1000 ? (t.pts/1000).toFixed(t.pts%1000===0?0:1)+'k' : '+'+t.pts;
+    const timerHtml = t.timer && !done ? `<span class="task-timer" data-task-timer>00:00:00</span>` : '';
+    return `<div class="task-item${done?' completed':''}" id="ti-${t.id}" onclick="toggleTask('${t.id}')">
+      <div class="task-checkbox">${done?CHECK_SVG:''}</div>
+      <div class="task-body">
+        <div class="task-name">${t.name}</div>
+        <div class="task-meta">
+          <span class="task-category">${t.cat}</span>
+          <div class="task-difficulty">${dots(t.diff)}</div>
+        </div>
+      </div>
+      ${timerHtml}
+      <div class="task-reward">${RSVG}${ptsLabel}</div>
+    </div>`;
+  }).join('');
+  updateTimers();
+}
+
+function toggleTask(id) {
+  if (S.completedTasks.includes(id)) return;
+  const t = TASKS_DEF.find(x=>x.id===id);
+  if (!t) return;
+  S.completedTasks.push(id);
+  S.totalTasksDone += 1;
+  save(S);
+  const row = document.getElementById('ti-'+id);
+  if (row) { row.classList.add('pop'); }
+  setTimeout(() => {
+    renderTasks();
+    addPoints(t.pts);
+    toast('✅', t.name, '+'+t.pts+' pts', t.cat+' task completed');
+  }, 260);
+}
+
+// ── LEADERBOARD ───────────────────────────────────────────────────────────────
+function renderLeaderboard() {
+  document.getElementById('lb-list').innerHTML = LB_DATA.map(p => {
+    const score = p.me ? S.points : p.pts;
+    const scoreClass = p.me ? 'lb-score lb-me-score' : 'lb-score';
+    return `<div class="lb-row${p.me?' me':''}">
+      <span class="lb-rank">${p.rank}</span>
+      <div class="lb-avatar" style="background:${p.col};color:${p.tc};">${p.init}</div>
+      <div class="lb-info">
+        <div class="lb-name">${p.name}</div>
+        <div class="lb-change ${p.chg}">${p.mv}</div>
+      </div>
+      <span class="${scoreClass}">${fmt(score)}</span>
+    </div>`;
+  }).join('');
+}
+
+// ── COUNTDOWN TIMER ───────────────────────────────────────────────────────────
+function updateTimers() {
+  const now  = new Date();
+  const next = new Date(now); next.setHours(24,0,0,0);
+  const diff = Math.max(0, Math.floor((next-now)/1000));
+  const h = String(Math.floor(diff/3600)).padStart(2,'0');
+  const m = String(Math.floor((diff%3600)/60)).padStart(2,'0');
+  const s = String(diff%60).padStart(2,'0');
+  document.querySelectorAll('[data-task-timer]').forEach(el => el.textContent=`${h}:${m}:${s}`);
+}
+
+// ── RESET ─────────────────────────────────────────────────────────────────────
+function resetAll() {
+  if (!confirm('Reset all points and progress? This cannot be undone.')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  S = defaultState();
+  S.todayDate = todayStr();
+  save(S);
+  renderCheckin(); renderTasks(); renderLeaderboard(); refreshUI();
+  toast('🔄','Data reset','0 pts','Starting fresh!');
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+renderCheckin();
+renderTasks();
+renderLeaderboard();
+refreshUI();
+setInterval(updateTimers, 1000);
+</script>
 </body>
 </html>
